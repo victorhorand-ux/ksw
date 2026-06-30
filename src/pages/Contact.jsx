@@ -76,7 +76,7 @@ const Contact = () => {
                 </label>
                 <input
                   {...register('phone')}
-                  placeholder="+250 XXX XXX XXX"
+                  placeholder="+250 784 154 697"
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
               </div>
@@ -133,7 +133,7 @@ const Contact = () => {
                     </h3>
                   </div>
                   <p className="text-gray-600 ml-10">
-                    +250 XXX XXX XXX
+                    +250 784 154 697
                   </p>
                 </div>
 
@@ -145,7 +145,7 @@ const Contact = () => {
                     </h3>
                   </div>
                   <p className="text-gray-600 ml-10">
-                    info@kigaliswimshop.com
+                    director@kigaliswimshop.online
                   </p>
                 </div>
 
@@ -155,12 +155,12 @@ const Contact = () => {
                     <h3 className="font-semibold">WhatsApp</h3>
                   </div>
                   <a
-                    href="https://wa.me/250788123456"
+                    href="https://wa.me/250784154697"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-primary-600 hover:text-primary-700 ml-10"
                   >
-                    +250 788 123 456
+                    +250 784 154 697
                   </a>
                 </div>
               </div>

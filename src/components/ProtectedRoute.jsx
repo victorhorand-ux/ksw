@@ -26,7 +26,7 @@ const ProtectedRoute = ({ children, requireAdmin = false }) => {
     return <Navigate to="/" replace />
   }
 
-  // 4. EVERYTHING IS GOOD! Let them in.
+  // 4. EVERYTHING IS GOOD! Let them in.              
   return children
 }
 

@@ -1,21 +1,26 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
-import { useEffect, Suspense, lazy } from 'react'
+// src/App.jsx
+import React, { useEffect, Suspense, lazy } from 'react'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
-import { HelmetProvider } from 'react-helmet-async' // 🚀 1. ADDED: Import the provider
+import { HelmetProvider } from 'react-helmet-async'
+
 import ErrorBoundary from './components/ErrorBoundary'
-import Header from './components/Header'
-import Footer from './components/Footer'
-import WhatsAppButton from './components/WhatsAppButton'
+import ProtectedRoute from './components/ProtectedRoute'
+import LoadingFallback from './components/LoadingFallback'
+import RootLayout from './layouts/RootLayout'
+
 import useAnalyticsStore from './stores/analyticsStore'
 import useAuthStore from './stores/authStore'
 import useProductStore from './stores/productStore' 
 import useCategoryStore from './stores/categoryStore' 
 import { getSessionId } from './utils/analytics'
-import ProtectedRoute from './components/ProtectedRoute'
-import Blog from './pages/Blog';
-import BlogPost from './pages/BlogPost';
-import CreatePost from './pages/CreatePost';
-// Lazy load pages
+
+// Eagerly loaded features
+import Blog from './pages/Blog'
+import BlogPost from './pages/BlogPost'
+import CreatePost from './pages/CreatePost'
+
+// Lazy loaded views
 const Home = lazy(() => import('./pages/Home'))
 const Products = lazy(() => import('./pages/Products'))
 const ProductDetail = lazy(() => import('./pages/ProductDetail'))
@@ -32,52 +37,6 @@ const SignIn = lazy(() => import('./pages/SignIn'))
 const Profile = lazy(() => import('./pages/Profile'))
 const AdminDashboard = lazy(() => import('./pages/admin/Dashboard'))
 
-const ScrollToTop = () => {
-  const { pathname } = useLocation()
-  useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
-  }, [pathname])
-  return null
-}
-
-const LoadingFallback = () => (
-  <div className="min-h-screen flex items-center justify-center">
-    <div className="text-center">
-      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sky-600 mx-auto mb-4"></div>
-      <p className="text-slate-600 font-bold">Loading...</p>
-    </div>
-  </div>
-)
-
-const AnalyticsTracker = () => {
-  const location = useLocation()
-  const trackPageView = useAnalyticsStore((state) => state.trackPageView)
-  const addPageToSession = useAnalyticsStore((state) => state.addPageToSession)
-  const user = useAuthStore((state) => state.user)
-  const sessionId = getSessionId()
-
-  useEffect(() => {
-    const page = location.pathname
-    trackPageView(page, user?.id || null)
-    addPageToSession(sessionId, page)
-  }, [location.pathname, trackPageView, addPageToSession, user, sessionId])
-
-  return null
-}
-
-const MainLayout = ({ children }) => {
-  const location = useLocation()
-  const isHome = location.pathname === '/'
-  return (
-    <main 
-      className={`flex-grow ${isHome ? '' : 'pt-16 lg:pt-20'}`} 
-      role="main"
-    >
-      {children}
-    </main>
-  )
-}
-
 function App() {
   const startSession = useAnalyticsStore((state) => state.startSession)
   const sessionId = getSessionId()
@@ -92,17 +51,14 @@ function App() {
     fetchCategories() 
 
     const unsubscribe = initializeAuth()
-    
     return () => {
       if (typeof unsubscribe === 'function') unsubscribe()
     }
   }, [startSession, sessionId, fetchProducts, fetchCategories, initializeAuth])
 
   return (
-    <HelmetProvider> {/* 🚀 2. WRAPPED: Entire app for SEO support */}
+    <HelmetProvider>
       <Router>
-        <ScrollToTop />
-        
         <Toaster 
           position="bottom-center"
           toastOptions={{
@@ -116,57 +72,48 @@ function App() {
               fontSize: '14px',
             },
             success: {
-              iconTheme: {
-                primary: '#0ea5e9',
-                secondary: '#fff',
-              },
+              iconTheme: { primary: '#0ea5e9', secondary: '#fff' },
             },
           }} 
         />
 
         <ErrorBoundary>
-          <div className="flex flex-col min-h-screen bg-slate-50">
-            <AnalyticsTracker />
-            <Header />
-            
-            <MainLayout>
-              <Suspense fallback={<LoadingFallback />}>
-                <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/products" element={<Products />} />
-                  <Route path="/products/:slug" element={<ProductDetail />} />
-                  <Route path="/cart" element={<Cart />} />
-                  <Route path="/checkout" element={<Checkout />} />
-                  <Route path="/about" element={<About />} />
-                  <Route path="/contact" element={<Contact />} />
-                  <Route path="/faq" element={<FAQ />} />
-                  <Route path="/policies/returns" element={<ReturnPolicy />} />
-                  <Route path="/policies/privacy" element={<PrivacyPolicy />} />
-                  <Route path="/policies/terms" element={<Terms />} />
-                  <Route path="/signup" element={<SignUp />} />
-                  <Route path="/login" element={<SignIn />} />
-                  <Route path="/profile" element={<Profile />} />
-                  <Route path="/blog" element={<Blog/>}/>
-                  <Route path='/blog/:slug' element={<BlogPost/>}/>
-                  
-                  <Route path="/wishlist" element={<div className="container mx-auto px-4 py-12 text-center"><h1 className="text-2xl font-bold">Wishlist Coming Soon</h1></div>} />
-                  <Route path="/admin" element={
-                    <ProtectedRoute requireAdmin={true}>
-                      <AdminDashboard />
-                    </ProtectedRoute>
-                  } />
-                  <Route path='/admin/create-post' element={
-                    <ProtectedRoute>
-                      <CreatePost/>
-                    </ProtectedRoute>
-                  }/>
-                </Routes>
-              </Suspense>
-            </MainLayout>
-            
-            <Footer />
-            <WhatsAppButton />
-          </div>
+          <Suspense fallback={<LoadingFallback />}>
+            <Routes>
+              {/* Main App Routes sharing the App Layout Wrapper */}
+              <Route element={<RootLayout />}>
+                <Route path="/" element={<Home />} />
+                <Route path="/products" element={<Products />} />
+                <Route path="/products/:slug" element={<ProductDetail />} />
+                <Route path="/cart" element={<Cart />} />
+                <Route path="/checkout" element={<Checkout />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/faq" element={<FAQ />} />
+                <Route path="/policies/returns" element={<ReturnPolicy />} />
+                <Route path="/policies/privacy" element={<PrivacyPolicy />} />
+                <Route path="/policies/terms" element={<Terms />} />
+                <Route path="/signup" element={<SignUp />} />
+                <Route path="/login" element={<SignIn />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/blog" element={<Blog/>}/>
+                <Route path='/blog/:slug' element={<BlogPost/>}/>
+                <Route path="/wishlist" element={<div className="container mx-auto px-4 py-12 text-center"><h1 className="text-2xl font-bold">Wishlist Coming Soon</h1></div>} />
+              </Route>
+
+              {/* Secure Admin Dashboard Routes */}
+              <Route path="/admin" element={
+                <ProtectedRoute requireAdmin={true}>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              } />
+              <Route path='/admin/create-post' element={
+                <ProtectedRoute>
+                  <CreatePost/>
+                </ProtectedRoute>
+              }/>
+            </Routes>
+          </Suspense>
         </ErrorBoundary>
       </Router>
     </HelmetProvider>

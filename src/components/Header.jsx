@@ -12,7 +12,6 @@ const Header = () => {
   const [showUserMenu, setShowUserMenu] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   
-  // === STORES ===
   const cartItems = useCartStore((state) => state.items)
   const { language, setLanguage } = useLanguageStore()
   const user = useAuthStore((state) => state.user)
@@ -25,7 +24,6 @@ const Header = () => {
   const notifRef = useRef(null)
   const userRef = useRef(null)
 
-  // 1. SCROLL EFFECT
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20)
@@ -34,7 +32,6 @@ const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // 2. CLICK OUTSIDE
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (notifRef.current && !notifRef.current.contains(event.target)) {
@@ -82,7 +79,6 @@ const Header = () => {
         <div className="container mx-auto px-2 sm:px-4">
           <div className="flex items-center justify-between gap-1 sm:gap-4">
             
-            {/* === LOGO (Scaled for mobile) === */}
             <Link to="/" className="flex items-center gap-1.5 sm:gap-2 group shrink-0">
               <img 
                 src="/logo.png" 

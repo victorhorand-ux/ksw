@@ -1,9 +1,9 @@
 const WhatsAppButton = () => {
-  const phoneNumber = '+250784154697' // Replace with actual WhatsApp Business number
+  const phoneNumber = '+250784154697' 
   const message = encodeURIComponent('Hello! I need help with my order.')
 
   return (
-    <a
+    <a 
       href={`https://wa.me/${phoneNumber}?text=${message}`}
       target="_blank"
       rel="noopener noreferrer"
