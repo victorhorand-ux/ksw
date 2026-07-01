@@ -19,7 +19,7 @@ import CreatePost from './pages/CreatePost'
 const Home = lazy(() => import('./pages/Home'))
 const Products = lazy(() => import('./pages/Products'))
 const ProductDetail = lazy(() => import('./pages/ProductDetail'))
-const Cart = lazy(() => import('./pages/Cart'))
+const Cart = lazy(() => import('./pages/Cart/Cart'))
 const Checkout = lazy(() => import('./pages/Checkout'))
 const About = lazy(() => import('./pages/About'))
 const Contact = lazy(() => import('./pages/Contact'))
