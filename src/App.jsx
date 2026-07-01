@@ -17,7 +17,7 @@ import CreatePost from './pages/CreatePost'
 
 // Lazy-loaded routes
 const Home = lazy(() => import('./pages/Home'))
-const Products = lazy(() => import('./pages/Products'))
+const Products = lazy(() => import('./pages/Products/Products'))
 const ProductDetail = lazy(() => import('./pages/ProductDetail'))
 const Cart = lazy(() => import('./pages/Cart/Cart'))
 const Checkout = lazy(() => import('./pages/Checkout/Checkout'))
