@@ -29,7 +29,7 @@ const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'))
 const Terms = lazy(() => import('./pages/Terms'))
 const SignUp = lazy(() => import('./pages/SignUp/SignUp'))
 const SignIn = lazy(() => import('./pages/SignIn/SignIn'))
-const Profile = lazy(() => import('./pages/Profile'))
+const Profile = lazy(() => import('./pages/Profile/Profile'))
 const AdminDashboard = lazy(() => import('./pages/admin/Dashboard'))
 
 export default function App() {
