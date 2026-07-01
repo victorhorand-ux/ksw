@@ -28,7 +28,7 @@ const ReturnPolicy = lazy(() => import('./pages/ReturnPolicy'))
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'))
 const Terms = lazy(() => import('./pages/Terms'))
 const SignUp = lazy(() => import('./pages/SignUp'))
-const SignIn = lazy(() => import('./pages/SignIn'))
+const SignIn = lazy(() => import('./pages/SignIn/SignIn'))
 const Profile = lazy(() => import('./pages/Profile'))
 const AdminDashboard = lazy(() => import('./pages/admin/Dashboard'))
 
