@@ -2,7 +2,7 @@
 import React, { Suspense, lazy } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
-import { HelmetProvider } from 'react-helmet-async'
+import { HelmetProvider, Helmet } from 'react-helmet-async'
 
 import ErrorBoundary from './components/ErrorBoundary'
 import ProtectedRoute from './components/ProtectedRoute'
@@ -10,12 +10,7 @@ import LoadingFallback from './components/LoadingFallback'
 import RootLayout from './layouts/RootLayout'
 import AppProvider from './components/AppProvider'
 
-// Eagerly loaded functional views
-import Blog from './pages/Blog'
-import BlogPost from './pages/BlogPost'
-import CreatePost from './pages/CreatePost'
-
-// Lazy-loaded routes
+// 🚀 SPEED: 100% Lazy-loaded routes (No eager loading blocking the main thread)
 const Home = lazy(() => import('./pages/Home'))
 const Products = lazy(() => import('./pages/Products/Products'))
 const ProductDetail = lazy(() => import('./pages/ProductDetail'))
@@ -31,34 +26,40 @@ const SignUp = lazy(() => import('./pages/SignUp/SignUp'))
 const SignIn = lazy(() => import('./pages/SignIn/SignIn'))
 const Profile = lazy(() => import('./pages/Profile/Profile'))
 const AdminDashboard = lazy(() => import('./pages/admin/Dashboard'))
+const Blog = lazy(() => import('./pages/Blog'))
+const BlogPost = lazy(() => import('./pages/BlogPost'))
+const CreatePost = lazy(() => import('./pages/CreatePost'))
 
 export default function App() {
   return (
     <HelmetProvider>
+      {/* 🚀 SEO: Global Default Meta Tags */}
+      <Helmet defaultTitle="Kigali Swim Shop | Premium Swimming Gear in Rwanda" titleTemplate="%s | Kigali Swim Shop">
+        <html lang="en" />
+        <meta name="description" content="Kigali's premier destination for professional swimming gear, swimwear, and accessories. Fast delivery across Rwanda." />
+        <meta name="theme-color" content="#0f172a" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Kigali Swim Shop" />
+        <meta property="og:description" content="Kigali's premier destination for professional swimming gear, swimwear, and accessories." />
+      </Helmet>
+
       <AppProvider>
         <Router>
           <Toaster 
             position="bottom-center"
             toastOptions={{
               duration: 3000,
-              style: {
-                background: '#0f172a',
-                color: '#fff',
-                borderRadius: '1rem',
-                padding: '12px 24px',
-                fontWeight: 'bold',
-                fontSize: '14px',
-              },
-              success: {
-                iconTheme: { primary: '#0ea5e9', secondary: '#fff' },
-              },
+              style: { background: '#0f172a', color: '#fff', borderRadius: '1rem', padding: '12px 24px', fontWeight: 'bold', fontSize: '14px' },
+              success: { iconTheme: { primary: '#0ea5e9', secondary: '#fff' } },
             }} 
           />
 
+          {/* 🚀 STABILITY: Catches any component crashes so the app doesn't white-screen */}
           <ErrorBoundary>
             <Suspense fallback={<LoadingFallback />}>
               <Routes>
-                {/* Application layout containing layout shells */}
+                
+                {/* PUBLIC ROUTES */}
                 <Route element={<RootLayout />}>
                   <Route path="/" element={<Home />} />
                   <Route path="/products" element={<Products />} />
@@ -73,23 +74,30 @@ export default function App() {
                   <Route path="/policies/terms" element={<Terms />} />
                   <Route path="/signup" element={<SignUp />} />
                   <Route path="/login" element={<SignIn />} />
-                  <Route path="/profile" element={<Profile />} />
                   <Route path="/blog" element={<Blog />} />
                   <Route path="/blog/:slug" element={<BlogPost />} />
-                  <Route path="/wishlist" element={<div className="container mx-auto px-4 py-12 text-center"><h1 className="text-2xl font-bold">Wishlist Coming Soon</h1></div>} />
+                  
+                  {/* 🚀 SECURITY: Profile is now protected at the router level */}
+                  <Route path="/profile" element={
+                    <ProtectedRoute>
+                      <Profile />
+                    </ProtectedRoute>
+                  } />
                 </Route>
 
-                {/* Restricted dashboard management layouts */}
+                {/* RESTRICTED ADMIN ROUTES */}
                 <Route path="/admin" element={
                   <ProtectedRoute requireAdmin={true}>
                     <AdminDashboard />
                   </ProtectedRoute>
                 } />
+                
                 <Route path="/admin/create-post" element={
-                  <ProtectedRoute>
+                  <ProtectedRoute requireAdmin={true}>
                     <CreatePost />
                   </ProtectedRoute>
                 } />
+
               </Routes>
             </Suspense>
           </ErrorBoundary>
