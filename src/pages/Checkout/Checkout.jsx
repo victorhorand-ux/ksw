@@ -1,20 +1,22 @@
 // src/pages/Checkout/Checkout.jsx
 import React, { useState, useEffect } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-hot-toast'
 
 import useCartStore from '../../stores/cartStore'
 import useLanguageStore from '../../stores/languageStore'
 import useAuthStore from '../../stores/authStore'
-import useOrderStore from '../../stores/orderStore'
 import useProductStore from '../../stores/productStore'
-
-import { formatRWFSimple } from '../../utils/currency'
-import { DELIVERY_ZONES, getDeliveryFee } from '../../utils/delivery'
+import { useCreateOrder } from '../../hooks/mutations/useCreateOrder'
+import { getDeliveryFee } from '../../utils/delivery'
 
 import OrderSuccess from './components/OrderSuccess'
 import CheckoutSummary from './components/CheckoutSummary'
+import ContactStep from './components/ContactStep'
+import ZoneStep from './components/ZoneStep'
+import PaymentStep from './components/PaymentStep'
+import PaymentInstructions from './components/PaymentInstructions'
 
 export default function Checkout() {
   const navigate = useNavigate()
@@ -22,7 +24,7 @@ export default function Checkout() {
   const language = useLanguageStore((state) => state.language)
   const user = useAuthStore((state) => state.user)
   
-  const createOrder = useOrderStore((state) => state.createOrder)
+  const { mutateAsync: createOrder } = useCreateOrder()
   const updateStock = useProductStore((state) => state.updateStock)
   
   const [selectedZone, setSelectedZone] = useState('gasabo')
@@ -32,11 +34,14 @@ export default function Checkout() {
   const [orderPlaced, setOrderPlaced] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [lastOrder, setLastOrder] = useState(null) 
+  
+  // Cache the form data when transitioning to manual payment
+  const [cachedFormData, setCachedFormData] = useState(null)
 
-  const { register, handleSubmit, formState: { errors } } = useForm()
+  const { register, handleSubmit } = useForm()
 
   const subtotal = getTotal()
-  const deliveryFee = getDeliveryFee(selectedZone)
+  const deliveryFee = getDeliveryFee(selectedZone, subtotal)
   const finalTotal = subtotal + deliveryFee
 
   useEffect(() => {
@@ -49,6 +54,7 @@ export default function Checkout() {
     if (paymentMethod === 'cod') {
       handleOrderPlacement(data)
     } else {
+      setCachedFormData(data)
       setShowPaymentInstructions(true)
       toast(language === 'en' ? 'Almost there! Please follow payment steps.' : 'Hasigaye gato!', { icon: '💳' })
       setTimeout(() => document.getElementById('payment-instructions')?.scrollIntoView({ behavior: 'smooth' }), 100)
@@ -95,75 +101,43 @@ export default function Checkout() {
       <div className="container mx-auto max-w-6xl">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mt-8">
           
-          {/* LEFT: FORM AREA */}
-          <div className="lg:col-span-7 space-y-6">
+          <div className="lg:col-span-7">
             <form id="checkout-form" onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               
-              {/* 1. CONTACT INFO */}
-              <div className="bg-white rounded-3xl shadow-sm border border-slate-100 p-6 lg:p-8">
-                <h2 className="text-xl font-black text-slate-900 mb-6 flex items-center gap-3">
-                  <span className="w-8 h-8 rounded-full bg-sky-500 text-white flex items-center justify-center text-xs shadow-md">1</span>
-                  {language === 'en' ? 'Contact Information' : "Amakuru y'Umukiriya"}
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  <input {...register('fullName', { required: true })} defaultValue={user?.name || ''} placeholder="Full Name" className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-sky-500/10 focus:border-sky-500" />
-                  <input {...register('phone', { required: true })} defaultValue={user?.phone || ''} placeholder="Phone Number" className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-sky-500/10 focus:border-sky-500" />
-                  <input {...register('email')} type="email" defaultValue={user?.email || ''} placeholder="Email (Optional)" className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-sky-500/10 focus:border-sky-500" />
-                  <input {...register('address', { required: true })} placeholder="Delivery Address" className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-sky-500/10 focus:border-sky-500" />
-                </div>
-              </div>
-
-              {/* 2. ZONES */}
-              <div className="bg-white rounded-3xl shadow-sm border border-slate-100 p-6 lg:p-8">
-                <h2 className="text-xl font-black text-slate-900 mb-6 flex items-center gap-3">
-                  <span className="w-8 h-8 rounded-full bg-sky-500 text-white flex items-center justify-center text-xs shadow-md">2</span>
-                  {language === 'en' ? 'Select Zone' : 'Hitamo Akarere'}
-                </h2>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {Object.entries(DELIVERY_ZONES).map(([key, zone]) => (
-                    <button key={key} type="button" onClick={() => setSelectedZone(key)} className={`p-4 rounded-2xl border-2 text-left transition-all ${selectedZone === key ? 'border-sky-500 bg-sky-50/50 transform -translate-y-1' : 'border-slate-50'}`}>
-                      <div className="font-black text-sm">{language === 'en' ? zone.name : zone.nameRw}</div>
-                      <div className="text-[10px] font-bold text-slate-400">{formatRWFSimple(zone.fee)}</div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* 3. PAYMENT */}
-              <div className="bg-white rounded-3xl shadow-sm border border-slate-100 p-6 lg:p-8">
-                <h2 className="text-xl font-black text-slate-900 mb-6 flex items-center gap-3">
-                  <span className="w-8 h-8 rounded-full bg-sky-500 text-white flex items-center justify-center text-xs shadow-md">3</span>
-                  {language === 'en' ? 'Payment Method' : 'Uburyo bwo Kwishyura'}
-                </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {['mtn', 'airtel', 'cod'].map((id) => (
-                    <label key={id} className={`flex items-center gap-4 p-4 rounded-2xl border-2 cursor-pointer ${paymentMethod === id ? 'border-sky-500 bg-sky-50/50' : 'border-slate-50'}`}>
-                      <input type="radio" name="paymentMethod" value={id} checked={paymentMethod === id} onChange={(e) => setPaymentMethod(e.target.value)} className="sr-only" />
-                      <div className="font-black text-sm uppercase">{id === 'cod' ? 'Cash on Delivery' : id}</div>
-                    </label>
-                  ))}
-                </div>
-              </div>
+              <ContactStep register={register} user={user} language={language} />
+              <ZoneStep selectedZone={selectedZone} setSelectedZone={setSelectedZone} language={language} />
+              <PaymentStep paymentMethod={paymentMethod} setPaymentMethod={setPaymentMethod} language={language} />
 
               {!showPaymentInstructions && (
-                <button type="submit" disabled={isSubmitting} className="w-full bg-gradient-to-r from-sky-500 to-blue-600 text-white font-black py-5 rounded-2xl text-lg shadow-xl active:scale-95 transition-all">
+                <button 
+                  type="submit" 
+                  disabled={isSubmitting} 
+                  className="w-full bg-gradient-to-r from-sky-500 to-blue-600 text-white font-black py-5 rounded-2xl text-lg shadow-xl active:scale-95 transition-all disabled:opacity-50"
+                >
                   {language === 'en' ? 'Continue to Payment' : 'Komeza'}
                 </button>
               )}
             </form>
 
-            {/* PAYMENT INSTRUCTIONS */}
             {showPaymentInstructions && paymentMethod !== 'cod' && (
-              <div id="payment-instructions" className="bg-slate-900 text-white rounded-[2rem] shadow-2xl p-8 border border-slate-800">
-                <h2 className="text-xl font-black text-sky-400 mb-6">Complete Payment</h2>
-                <input type="text" value={transactionId} onChange={(e) => setTransactionId(e.target.value)} placeholder="Transaction ID" className="w-full px-5 py-5 bg-slate-800 border border-slate-700 rounded-2xl focus:border-sky-500 text-white mb-4" />
-                <button onClick={() => handleOrderPlacement({})} disabled={isSubmitting} className="w-full bg-sky-500 text-slate-900 font-black py-5 rounded-2xl">Confirm Payment</button>
-              </div>
+              <PaymentInstructions 
+                transactionId={transactionId}
+                setTransactionId={setTransactionId}
+                onConfirm={() => handleOrderPlacement(cachedFormData)}
+                isSubmitting={isSubmitting}
+                language={language}
+              />
             )}
           </div>
 
-          {/* RIGHT: SUMMARY */}
-          <CheckoutSummary language={language} items={items} subtotal={subtotal} deliveryFee={deliveryFee} finalTotal={finalTotal} selectedZone={selectedZone} />
+          <CheckoutSummary 
+            language={language} 
+            items={items} 
+            subtotal={subtotal} 
+            deliveryFee={deliveryFee} 
+            finalTotal={finalTotal} 
+            selectedZone={selectedZone} 
+          />
         </div>
       </div>
     </div>
