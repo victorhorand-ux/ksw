@@ -2,17 +2,20 @@
 import React from 'react'
 
 export default function PaymentStep({ paymentMethod, setPaymentMethod, language }) {
+  // 🚀 Updated array to remove 'cod' and add 'bank'
+  const methods = ['mtn', 'airtel', 'bank'];
+
   return (
     <div className="bg-white rounded-3xl shadow-sm border border-slate-100 p-6 lg:p-8">
       <h2 className="text-xl font-black text-slate-900 mb-6 flex items-center gap-3">
         <span className="w-8 h-8 rounded-full bg-sky-500 text-white flex items-center justify-center text-xs shadow-md">3</span>
         {language === 'en' ? 'Payment Method' : 'Uburyo bwo Kwishyura'}
       </h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {['mtn', 'airtel', 'cod'].map((id) => (
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {methods.map((id) => (
           <label 
             key={id} 
-            className={`flex items-center gap-4 p-4 rounded-2xl border-2 cursor-pointer transition-all ${
+            className={`flex items-center justify-center p-4 rounded-2xl border-2 cursor-pointer transition-all ${
               paymentMethod === id ? 'border-sky-500 bg-sky-50/50' : 'border-slate-50 hover:border-slate-200'
             }`}
           >
@@ -25,7 +28,7 @@ export default function PaymentStep({ paymentMethod, setPaymentMethod, language 
               className="sr-only" 
             />
             <div className="font-black text-sm uppercase">
-              {id === 'cod' ? (language === 'en' ? 'Cash on Delivery' : 'Kwishyura Mugejejweho') : id}
+              {id === 'bank' ? (language === 'en' ? 'Bank Transfer' : 'Kwishyura kuri Banki') : id}
             </div>
           </label>
         ))}

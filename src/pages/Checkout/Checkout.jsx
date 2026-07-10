@@ -35,10 +35,10 @@ export default function Checkout() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [lastOrder, setLastOrder] = useState(null) 
   
-  // Cache the form data when transitioning to manual payment
   const [cachedFormData, setCachedFormData] = useState(null)
 
-  const { register, handleSubmit } = useForm()
+  // 🚀 Added formState: { errors } to track validation
+  const { register, handleSubmit, formState: { errors } } = useForm()
 
   const subtotal = getTotal()
   const deliveryFee = getDeliveryFee(selectedZone, subtotal)
@@ -51,14 +51,10 @@ export default function Checkout() {
   if (items.length === 0 && !orderPlaced) return null
 
   const onSubmit = (data) => {
-    if (paymentMethod === 'cod') {
-      handleOrderPlacement(data)
-    } else {
-      setCachedFormData(data)
-      setShowPaymentInstructions(true)
-      toast(language === 'en' ? 'Almost there! Please follow payment steps.' : 'Hasigaye gato!', { icon: '💳' })
-      setTimeout(() => document.getElementById('payment-instructions')?.scrollIntoView({ behavior: 'smooth' }), 100)
-    }
+    setCachedFormData(data)
+    setShowPaymentInstructions(true)
+    toast(language === 'en' ? 'Almost there! Please follow payment steps.' : 'Hasigaye gato!', { icon: '💳' })
+    setTimeout(() => document.getElementById('payment-instructions')?.scrollIntoView({ behavior: 'smooth' }), 100)
   }
 
   const handleOrderPlacement = async (customerData) => {
@@ -75,7 +71,7 @@ export default function Checkout() {
       deliveryZone: selectedZone,
       deliveryFee, subtotal, total: finalTotal,
       paymentMethod,
-      transactionId: paymentMethod !== 'cod' ? transactionId : 'none',
+      transactionId: transactionId || 'pending',
       createdAt: new Date().toISOString()
     }
 
@@ -104,9 +100,25 @@ export default function Checkout() {
           <div className="lg:col-span-7">
             <form id="checkout-form" onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               
-              <ContactStep register={register} user={user} language={language} />
-              <ZoneStep selectedZone={selectedZone} setSelectedZone={setSelectedZone} language={language} />
-              <PaymentStep paymentMethod={paymentMethod} setPaymentMethod={setPaymentMethod} language={language} />
+              {/* 🚀 Pass 'errors' here to enable the new regex validation */}
+              <ContactStep 
+                register={register} 
+                errors={errors} 
+                user={user} 
+                language={language} 
+              />
+              
+              <ZoneStep 
+                selectedZone={selectedZone} 
+                setSelectedZone={setSelectedZone} 
+                language={language} 
+              />
+              
+              <PaymentStep 
+                paymentMethod={paymentMethod} 
+                setPaymentMethod={setPaymentMethod} 
+                language={language} 
+              />
 
               {!showPaymentInstructions && (
                 <button 
@@ -119,8 +131,9 @@ export default function Checkout() {
               )}
             </form>
 
-            {showPaymentInstructions && paymentMethod !== 'cod' && (
+            {showPaymentInstructions && (
               <PaymentInstructions 
+                paymentMethod={paymentMethod}
                 transactionId={transactionId}
                 setTransactionId={setTransactionId}
                 onConfirm={() => handleOrderPlacement(cachedFormData)}

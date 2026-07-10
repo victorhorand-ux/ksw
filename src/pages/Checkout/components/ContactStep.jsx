@@ -1,26 +1,43 @@
 // src/pages/Checkout/components/ContactStep.jsx
 import React from 'react'
 
-export default function ContactStep({ register, user, language }) {
+export default function ContactStep({ register, user, language, errors }) {
   return (
     <div className="bg-white rounded-3xl shadow-sm border border-slate-100 p-6 lg:p-8">
       <h2 className="text-xl font-black text-slate-900 mb-6 flex items-center gap-3">
         <span className="w-8 h-8 rounded-full bg-sky-500 text-white flex items-center justify-center text-xs shadow-md">1</span>
         {language === 'en' ? 'Contact Information' : "Amakuru y'Umukiriya"}
       </h2>
+      
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        <input 
-          {...register('fullName', { required: true })} 
-          defaultValue={user?.name || ''} 
-          placeholder={language === 'en' ? "Full Name" : "Amazina"} 
-          className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-sky-500/10 focus:border-sky-500 outline-none transition-all" 
-        />
-        <input 
-          {...register('phone', { required: true })} 
-          defaultValue={user?.phone || ''} 
-          placeholder={language === 'en' ? "Phone Number" : "Nimero ya Telefone"} 
-          className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-sky-500/10 focus:border-sky-500 outline-none transition-all" 
-        />
+        {/* Name Validation: Only letters and spaces */}
+        <div>
+          <input 
+            {...register('fullName', { 
+              required: true, 
+              pattern: /^[A-Za-z\s]+$/ 
+            })} 
+            defaultValue={user?.name || ''} 
+            placeholder={language === 'en' ? "Full Name" : "Amazina"} 
+            className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-sky-500/10 focus:border-sky-500 outline-none transition-all" 
+          />
+          {errors?.fullName && <p className="text-rose-500 text-xs mt-1 font-bold">{language === 'en' ? 'Invalid name' : 'Amazina atemewe'}</p>}
+        </div>
+
+        {/* Phone Validation: Only numbers, 10 digits */}
+        <div>
+          <input 
+            {...register('phone', { 
+              required: true, 
+              pattern: /^[0-9]{10}$/ 
+            })} 
+            defaultValue={user?.phone || ''} 
+            placeholder={language === 'en' ? "Phone Number (10 digits)" : "Nimero ya Telefone"} 
+            className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-sky-500/10 focus:border-sky-500 outline-none transition-all" 
+          />
+          {errors?.phone && <p className="text-rose-500 text-xs mt-1 font-bold">{language === 'en' ? 'Must be 10 digits' : 'Nimero y\'telefone igomba kuba yuzuye'}</p>}
+        </div>
+
         <input 
           {...register('email')} 
           type="email" 
