@@ -18,6 +18,7 @@ const Cart = lazy(() => import('./pages/Cart/Cart'))
 const Checkout = lazy(() => import('./pages/Checkout/Checkout'))
 const About = lazy(() => import('./pages/About'))
 const Contact = lazy(() => import('./pages/Contact'))
+const NotFound = lazy(() => import('./pages/NotFound'))
 const FAQ = lazy(() => import('./pages/FAQ'))
 const ReturnPolicy = lazy(() => import('./pages/ReturnPolicy'))
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'))
@@ -83,6 +84,7 @@ export default function App() {
                       <Profile />
                     </ProtectedRoute>
                   } />
+                  <Route path="*" element={<NotFound />} />
                 </Route>
 
                 {/* RESTRICTED ADMIN ROUTES */}
