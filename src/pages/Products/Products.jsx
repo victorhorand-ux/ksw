@@ -2,8 +2,10 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
-import useProductStore from '../../stores/productStore'
-import useCategoryStore from '../../stores/categoryStore'
+// 🚀 1. Import our new React Query hooks
+import { useProducts } from '../../hooks/queries/useProducts'
+import { useCategories } from '../../hooks/queries/useCategories'
+
 import useCartStore from '../../stores/cartStore'
 import useLanguageStore from '../../stores/languageStore'
 
@@ -16,8 +18,10 @@ export default function Products() {
   const urlSearchQuery = searchParams.get('search') || ''
   const urlCategory = searchParams.get('category')
 
-  const products = useProductStore((state) => state.products)
-  const categories = useCategoryStore((state) => state.categories)
+  // 🚀 2. Replace Zustand with React Query (includes automatic loading states!)
+  const { data: products = [], isLoading: isProductsLoading } = useProducts()
+  const { data: categories = [], isLoading: isCategoriesLoading } = useCategories()
+  
   const addItem = useCartStore((state) => state.addItem)
   const language = useLanguageStore((state) => state.language)
 
@@ -44,7 +48,7 @@ export default function Products() {
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
       const matchesSearch = product.name.toLowerCase().includes(urlSearchQuery.toLowerCase()) ||
-                            product.description.toLowerCase().includes(urlSearchQuery.toLowerCase())
+                            (product.description && product.description.toLowerCase().includes(urlSearchQuery.toLowerCase()))
       const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory
       const matchesPrice = product.price >= priceRange[0] && product.price <= priceRange[1]
       return matchesSearch && matchesCategory && matchesPrice
@@ -62,6 +66,18 @@ export default function Products() {
       else prev.set('category', catId)
       return prev
     })
+  }
+
+  // 🚀 3. Add a graceful loading UI while React Query fetches the initial data
+  if (isProductsLoading || isCategoriesLoading) {
+    return (
+      <div className="min-h-[60vh] flex flex-col items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-slate-200 border-t-sky-500 mb-4"></div>
+        <p className="text-slate-500 font-bold tracking-widest uppercase text-xs">
+          {language === 'en' ? 'Loading Catalog...' : 'Birimo Gufunguka...'}
+        </p>
+      </div>
+    )
   }
 
   return (
