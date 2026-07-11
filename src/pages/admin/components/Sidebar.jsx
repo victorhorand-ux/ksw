@@ -12,7 +12,9 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) 
     { id: 'orders', label: 'Orders', icon: '📦' },
     { id: 'products', label: 'Products', icon: '🏷️' },
     { id: 'categories', label: 'Categories', icon: '📂' },
-    { id: 'subscribers', label: 'Subscribers', icon: '📬' }
+    { id: 'subscribers', label: 'Subscribers', icon: '📬' },
+    // 🚀 Added Posts/Articles Tab here
+    { id: 'posts', label: 'Articles', icon: '📝' }
   ];
 
   return (
