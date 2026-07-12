@@ -17,7 +17,7 @@ import AppProvider from './components/AppProvider'
 // 🚀 SPEED: 100% Lazy-loaded routes
 const Home = lazy(() => import('./pages/Home'))
 const Products = lazy(() => import('./pages/Products/Products'))
-const ProductDetail = lazy(() => import('./pages/ProductDetail'))
+const ProductDetail = lazy(() => import('./pages/ProductDetail/ProductDetail'))
 const Cart = lazy(() => import('./pages/Cart/Cart'))
 const Checkout = lazy(() => import('./pages/Checkout/Checkout'))
 const About = lazy(() => import('./pages/About'))
