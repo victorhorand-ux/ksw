@@ -37,7 +37,6 @@ export default function Checkout() {
   
   const [cachedFormData, setCachedFormData] = useState(null)
 
-  // 🚀 Added formState: { errors } to track validation
   const { register, handleSubmit, formState: { errors } } = useForm()
 
   const subtotal = getTotal()
@@ -76,14 +75,48 @@ export default function Checkout() {
     }
 
     try {
+      // 1. Save to Firebase
       await createOrder(orderPayload)
       await updateStock(items)
       setLastOrder(orderPayload)
+      
+      // 🚀 2. BUILD THE WHATSAPP MESSAGE
+      let message = `*NEW ORDER - Kigali Swim Shop* 🏊‍♂️\n\n`;
+      message += `*Customer:* ${orderPayload.customer.fullName}\n`;
+      message += `*Phone:* ${orderPayload.customer.phone}\n`;
+      message += `*Address:* ${orderPayload.customer.address} (${selectedZone})\n\n`;
+      message += `*Items:*\n`;
+
+      items.forEach(item => {
+        message += `▪️ ${item.quantity}x ${item.name}`;
+        if (item.selectedSize) message += ` (Size: ${item.selectedSize})`;
+        if (item.selectedColor) message += ` (Color: ${item.selectedColor})`;
+        message += ` - ${item.price * item.quantity} RWF\n`;
+      });
+
+      message += `\n*Delivery Fee:* ${deliveryFee} RWF\n`;
+      message += `*Total Paid:* ${finalTotal} RWF\n`;
+      message += `*Payment Method:* ${paymentMethod.toUpperCase()}\n`;
+      if (transactionId) message += `*Transaction ID:* ${transactionId}\n`;
+
+      // 3. Encode and prep URL
+      const encodedMessage = encodeURIComponent(message);
+      
+      // 🚨 IMPORTANT: Replace this with your actual business WhatsApp number (with country code, no + or spaces)
+      const shopWhatsAppNumber = "250784154697"; 
+      
+      const whatsappUrl = `https://wa.me/${shopWhatsAppNumber}?text=${encodedMessage}`;
+
+      // 4. Clean up UI
       clearCart()
-      setOrderPlaced(true)
-      window.scrollTo(0, 0)
+      setOrderPlaced(true) // Keeps the success screen rendering in the background
       toast.success(language === 'en' ? 'Order Secured!' : 'Itegeko ryohererejwe!')
+
+      // 🚀 5. TRIGGER FOOLPROOF REDIRECT
+      window.location.href = whatsappUrl;
+
     } catch (error) {
+      console.error(error);
       toast.error(language === 'en' ? "Failed to save order." : "Habaye ikibazo.")
     } finally {
       setIsSubmitting(false)
@@ -100,7 +133,6 @@ export default function Checkout() {
           <div className="lg:col-span-7">
             <form id="checkout-form" onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               
-              {/* 🚀 Pass 'errors' here to enable the new regex validation */}
               <ContactStep 
                 register={register} 
                 errors={errors} 
