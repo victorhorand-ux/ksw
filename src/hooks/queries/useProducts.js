@@ -1,17 +1,16 @@
-// src/hooks/queries/useCategories.js
-import { useQuery } from '@tanstack/react-query'
-import { collection, getDocs } from 'firebase/firestore'
-import { db } from '../../config/firebase'
+import { useQuery } from '@tanstack/react-query';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../../config/firebase';
 
-export function useCategories() {
+export function useProducts() {
   return useQuery({
-    queryKey: ['categories'],
+    queryKey: ['products'],
     queryFn: async () => {
-      const querySnapshot = await getDocs(collection(db, 'categories'))
-      return querySnapshot.docs.map(doc => ({
+      const snapshot = await getDocs(collection(db, 'products'));
+      return snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
-      }))
+      }));
     }
-  })
+  });
 }

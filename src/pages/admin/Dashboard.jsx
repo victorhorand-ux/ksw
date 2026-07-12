@@ -1,3 +1,4 @@
+// src/pages/admin/Dashboard.jsx
 import React, { useState } from 'react';
 import AdminLayout from './layouts/AdminLayout';
 import { useAdminData } from '../../hooks/admin/useAdminData';
@@ -6,7 +7,7 @@ import ProductsTab from './tabs/ProductsTab';
 import OrdersTab from './tabs/OrdersTab';
 import CategoriesTab from './tabs/CategoriesTab';
 import SubscribersTab from './tabs/SubscribersTab';
-import PostsTab from './tabs/PostsTab'; // 🚀 Added PostsTab
+import PostsTab from './tabs/PostsTab'; 
 import ProductModal from './components/ProductModal';
 import CategoryModal from './components/CategoryModal';
 
@@ -15,10 +16,10 @@ import useOrderStore from '../../stores/orderStore';
 import useCategoryStore from '../../stores/categoryStore';
 
 import { toast } from 'react-hot-toast';
-import { triggerCloudflareRebuild } from '../../utils/rebuildService'; // 🚀 Added Webhook trigger
-import { doc, deleteDoc, updateDoc } from 'firebase/firestore'; // 🚀 Added Firebase mutators
+import { triggerCloudflareRebuild } from '../../utils/rebuildService'; 
+import { doc, deleteDoc, updateDoc } from 'firebase/firestore'; 
 import { db } from '../../config/firebase';
-import { useQueryClient } from '@tanstack/react-query'; // 🚀 Added Cache invalidator
+import { useQueryClient } from '@tanstack/react-query'; 
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('overview');
@@ -77,7 +78,7 @@ export default function Dashboard() {
               try {
                 await deleteCategory(catId);
                 toast.success('Category removed');
-                triggerCloudflareRebuild(); // 🚀 Rebuild site on deletion
+                triggerCloudflareRebuild(); 
               } catch (e) {
                 toast.error('Failed to remove category');
               }
@@ -90,7 +91,6 @@ export default function Dashboard() {
         <SubscribersTab subscribers={data.subscribers} />
       )}
 
-      {/* 🚀 NEW: Posts Tab Integration */}
       {activeTab === 'posts' && (
         <PostsTab 
           posts={data.posts}
@@ -98,8 +98,8 @@ export default function Dashboard() {
             try {
               await updateDoc(doc(db, 'posts', postId), { status: newStatus });
               toast.success(`Post marked as ${newStatus}`);
-              triggerCloudflareRebuild(); // 🚀 Rebuild site
-              queryClient.invalidateQueries(['admin-data']); // Instantly refresh UI
+              triggerCloudflareRebuild(); 
+              queryClient.invalidateQueries(['admin-data']); 
             } catch (e) {
               toast.error('Failed to update status');
             }
@@ -109,8 +109,8 @@ export default function Dashboard() {
               try {
                 await deleteDoc(doc(db, 'posts', postId));
                 toast.success('Article deleted');
-                triggerCloudflareRebuild(); // 🚀 Rebuild site
-                queryClient.invalidateQueries(['admin-data']); // Instantly refresh UI
+                triggerCloudflareRebuild(); 
+                queryClient.invalidateQueries(['admin-data']); 
               } catch (e) {
                 toast.error('Failed to delete article');
               }
@@ -126,8 +126,16 @@ export default function Dashboard() {
           categories={data.categories}
           onClose={() => setShowProductModal(false)}
           onSave={async (formData) => {
+            
+            // 🚀 NEW: Auto-generate the slug from the product name
+            const generatedSlug = formData.name
+              .toLowerCase()
+              .replace(/[^a-z0-9]+/g, '-') 
+              .replace(/(^-|-$)+/g, '');   
+
             const productData = {
               ...formData,
+              slug: formData.slug || generatedSlug, // 🚀 Save it to Firestore
               price: Number(formData.price),
               stock: Number(formData.stock),
               updatedAt: new Date().toISOString()
@@ -141,7 +149,7 @@ export default function Dashboard() {
                 await addProduct({ ...productData, createdAt: new Date().toISOString() });
                 toast.success('New product added!');
               }
-              triggerCloudflareRebuild(); // 🚀 Rebuild site
+              triggerCloudflareRebuild(); 
               setShowProductModal(false);
             } catch (e) {
               toast.error("Failed to save product");
@@ -167,7 +175,7 @@ export default function Dashboard() {
                 await addCategory(categoryData);
                 toast.success('Category created');
               }
-              triggerCloudflareRebuild(); // 🚀 Rebuild site
+              triggerCloudflareRebuild(); 
               setShowCategoryModal(false);
             } catch (error) {
               toast.error("Failed to save category");
