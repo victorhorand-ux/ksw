@@ -18,6 +18,9 @@ import ZoneStep from './components/ZoneStep'
 import PaymentStep from './components/PaymentStep'
 import PaymentInstructions from './components/PaymentInstructions'
 
+// 🚀 Imported the reusable Button
+import Button from '../../components/ui/Button' 
+
 export default function Checkout() {
   const navigate = useNavigate()
   const { items, clearCart, getTotal } = useCartStore()
@@ -80,7 +83,7 @@ export default function Checkout() {
       await updateStock(items)
       setLastOrder(orderPayload)
       
-      // 🚀 2. BUILD THE WHATSAPP MESSAGE
+      // 2. BUILD THE WHATSAPP MESSAGE
       let message = `*NEW ORDER - Kigali Swim Shop* 🏊‍♂️\n\n`;
       message += `*Customer:* ${orderPayload.customer.fullName}\n`;
       message += `*Phone:* ${orderPayload.customer.phone}\n`;
@@ -101,18 +104,16 @@ export default function Checkout() {
 
       // 3. Encode and prep URL
       const encodedMessage = encodeURIComponent(message);
-      
-      // 🚨 IMPORTANT: Replace this with your actual business WhatsApp number (with country code, no + or spaces)
       const shopWhatsAppNumber = "250784154697"; 
       
       const whatsappUrl = `https://wa.me/${shopWhatsAppNumber}?text=${encodedMessage}`;
 
       // 4. Clean up UI
       clearCart()
-      setOrderPlaced(true) // Keeps the success screen rendering in the background
+      setOrderPlaced(true) 
       toast.success(language === 'en' ? 'Order Secured!' : 'Itegeko ryohererejwe!')
 
-      // 🚀 5. TRIGGER FOOLPROOF REDIRECT
+      // 5. TRIGGER FOOLPROOF REDIRECT
       window.location.href = whatsappUrl;
 
     } catch (error) {
@@ -153,13 +154,15 @@ export default function Checkout() {
               />
 
               {!showPaymentInstructions && (
-                <button 
+                <Button 
                   type="submit" 
+                  variant="primary"
+                  size="lg"
+                  fullWidth
                   disabled={isSubmitting} 
-                  className="w-full bg-gradient-to-r from-sky-500 to-blue-600 text-white font-black py-5 rounded-2xl text-lg shadow-xl active:scale-95 transition-all disabled:opacity-50"
                 >
                   {language === 'en' ? 'Continue to Payment' : 'Komeza'}
-                </button>
+                </Button>
               )}
             </form>
 
