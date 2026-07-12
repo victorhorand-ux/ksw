@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+// 🚀 1. Added useNavigate
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast'; // Added for better UX
 
-// 🚀 Swapped Zustand for our new ultra-fast React Query hooks
+// Swapped Zustand for our new ultra-fast React Query hooks
 import { useProduct } from '../../hooks/queries/useProduct';
 import { useProducts } from '../../hooks/queries/useProducts';
 
@@ -9,7 +11,7 @@ import useCartStore from '../../stores/cartStore';
 import useLanguageStore from '../../stores/languageStore';
 import useAnalyticsStore from '../../stores/analyticsStore';
 
-// 🧩 The new tiny reusable components (we will create these next)
+// The new tiny reusable components
 import ProductGallery from './components/ProductGallery';
 import ProductActionPanel from './components/ProductActionPanel';
 import RelatedProducts from './components/RelatedProducts';
@@ -18,11 +20,13 @@ import SizeGuideModal from './components/SizeGuideModal';
 
 export default function ProductDetail() {
   const { slug } = useParams();
+  const navigate = useNavigate(); // 🚀 2. Initialize navigate
+  
   const language = useLanguageStore((state) => state.language);
   const trackProductView = useAnalyticsStore((state) => state.trackProductView);
   const addItem = useCartStore((state) => state.addItem);
 
-  // 🚀 Network & Cache Layer
+  // Network & Cache Layer
   const { data: product, isLoading, error } = useProduct(slug);
   const { data: allProducts = [] } = useProducts(); 
 
@@ -46,9 +50,18 @@ export default function ProductDetail() {
   const handleAddToCart = () => {
     if (!product || !product.inStock) return; // Security Check
     addItem({ ...product, selectedSize, selectedColor }, quantity);
+    toast.success(language === 'en' ? 'Added to cart!' : 'Yashyizwe mu gitebo!');
   };
 
-  // 🚀 Graceful Loading UI
+  // 🚀 3. Create the Buy Now function
+  const handleBuyNow = () => {
+    if (!product || !product.inStock) return;
+    // Add to cart, then immediately teleport to checkout
+    addItem({ ...product, selectedSize, selectedColor }, quantity);
+    navigate('/checkout');
+  };
+
+  // Graceful Loading UI
   if (isLoading) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center">
@@ -93,10 +106,10 @@ export default function ProductDetail() {
       <div className="container mx-auto max-w-6xl px-0 lg:px-4 py-0 lg:py-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 lg:gap-12 xl:gap-16">
           
-          {/* 🧩 Extracted: Left Image Gallery */}
+          {/* Extracted: Left Image Gallery */}
           <ProductGallery product={product} />
 
-          {/* 🧩 Extracted: Right Action Panel */}
+          {/* Extracted: Right Action Panel */}
           <ProductActionPanel 
             product={product}
             language={language}
@@ -107,28 +120,30 @@ export default function ProductDetail() {
             quantity={quantity}
             setQuantity={setQuantity}
             onAddToCart={handleAddToCart}
+            onBuyNow={handleBuyNow} // 🚀 4. Passed down to Action Panel
             onOpenSizeChart={() => setShowSizeChart(true)}
           />
 
         </div>
       </div>
 
-      {/* 🧩 Extracted: Related Products Carousel */}
+      {/* Extracted: Related Products Carousel */}
       <RelatedProducts 
         currentProductId={product.id} 
         allProducts={allProducts} 
         language={language} 
       />
 
-      {/* 🧩 Extracted: Mobile Bottom Sticky Bar */}
+      {/* Extracted: Mobile Bottom Sticky Bar */}
       <MobileBuyBar 
         product={product} 
         language={language} 
         quantity={quantity} 
-        onAddToCart={handleAddToCart} 
+        onAddToCart={handleAddToCart}
+        onBuyNow={handleBuyNow} // 🚀 5. Passed down to Mobile Bar
       />
 
-      {/* 🧩 Extracted: Size Chart Modal */}
+      {/* Extracted: Size Chart Modal */}
       {showSizeChart && (
         <SizeGuideModal 
           language={language} 

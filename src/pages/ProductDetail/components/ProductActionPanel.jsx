@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { formatRWF } from '../../../utils/currency';
+import Button from '../../../components/ui/Button'; // 🚀 Imported the new reusable Button
 
 export default function ProductActionPanel({
   product,
@@ -11,6 +12,7 @@ export default function ProductActionPanel({
   quantity,
   setQuantity,
   onAddToCart,
+  onBuyNow,
   onOpenSizeChart
 }) {
   const [openSection, setOpenSection] = useState('description');
@@ -91,7 +93,8 @@ export default function ProductActionPanel({
               <div className="flex justify-between items-center mb-3">
                 <span className="text-sm font-bold text-slate-900">{language === 'en' ? 'Select Size' : 'Hitamo Ingano'}</span>
                 <button onClick={onOpenSizeChart} className="text-xs font-bold text-sky-600 hover:underline flex items-center gap-1">
-                  <span>📏</span> {language === 'en' ? 'Size Guide' : 'Inyigisho'}
+                  <svg className="w-4 h-4 mr-1 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" /></svg>
+                  {language === 'en' ? 'Size Guide' : 'Inyigisho'}
                 </button>
               </div>
               <div className="flex flex-wrap gap-3">
@@ -128,23 +131,53 @@ export default function ProductActionPanel({
           </div>
         </div>
 
-        {/* Desktop Add to Cart */}
+        {/* 🚀 Refactored: Desktop Actions Using Reusable Buttons */}
         <div className="hidden lg:block pt-6">
-          <button
-            onClick={onAddToCart}
-            disabled={!product.inStock}
-            className="w-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 disabled:from-slate-300 disabled:to-slate-400 text-white font-black py-5 rounded-2xl text-lg shadow-[0_10px_20px_rgba(2,_132,_199,_0.3)] hover:shadow-[0_15px_30px_rgba(2,_132,_199,_0.4)] hover:-translate-y-1 transition-all flex items-center justify-center gap-3 border border-sky-400/20"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
-            {product.inStock 
-              ? (language === 'en' ? 'Add to Cart' : 'Ongera mu gikapu')
-              : (language === 'en' ? 'Out of Stock' : 'Ntibyabonetse')
-            }
-          </button>
+          <div className="flex flex-col sm:flex-row gap-4">
+            
+            {/* Secondary: Add to Cart */}
+            <Button
+              variant="secondary"
+              size="lg"
+              onClick={onAddToCart}
+              disabled={!product.inStock}
+              className="flex-1 gap-2"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              </svg>
+              {language === 'en' ? 'Add to Cart' : 'Ongera mu gikapu'}
+            </Button>
+
+            {/* Primary: Buy Now */}
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={onBuyNow}
+              disabled={!product.inStock}
+              className="flex-[1.5]"
+            >
+              {product.inStock 
+                ? (language === 'en' ? 'Buy It Now' : 'Gura Nonaha')
+                : (language === 'en' ? 'Out of Stock' : 'Ntibyabonetse')
+              }
+            </Button>
+            
+          </div>
+
           <div className="flex justify-center gap-6 mt-6 text-xs font-bold text-slate-500">
-            <span className="flex items-center gap-1.5">🚚 2h Delivery</span>
-            <span className="flex items-center gap-1.5">🛡️ Official Warranty</span>
-            <span className="flex items-center gap-1.5">💳 Secure Pay</span>
+            <span className="flex items-center gap-1.5">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" /></svg>
+              2h Delivery
+            </span>
+            <span className="flex items-center gap-1.5">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+              Official Warranty
+            </span>
+            <span className="flex items-center gap-1.5">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+              Secure Pay
+            </span>
           </div>
         </div>
 
@@ -156,7 +189,7 @@ export default function ProductActionPanel({
               className="w-full flex justify-between items-center p-4 lg:p-5"
             >
               <span className="font-bold text-slate-900">{language === 'en' ? 'Description' : 'Ibisobanuro'}</span>
-              <span className={`transform transition-transform text-slate-400 ${openSection === 'description' ? 'rotate-180' : ''}`}>▼</span>
+              <svg className={`w-5 h-5 transform transition-transform text-slate-400 ${openSection === 'description' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
             </button>
             {openSection === 'description' && (
               <div className="p-4 lg:p-5 text-slate-600 text-sm leading-relaxed border-t border-slate-50 bg-slate-50/50 animate-fade-in whitespace-pre-line">
@@ -171,7 +204,7 @@ export default function ProductActionPanel({
               className="w-full flex justify-between items-center p-4 lg:p-5"
             >
               <span className="font-bold text-slate-900">{language === 'en' ? 'Shipping & Returns' : 'Kubikugezaho no Gusubiza'}</span>
-              <span className={`transform transition-transform text-slate-400 ${openSection === 'shipping' ? 'rotate-180' : ''}`}>▼</span>
+              <svg className={`w-5 h-5 transform transition-transform text-slate-400 ${openSection === 'shipping' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
             </button>
             {openSection === 'shipping' && (
               <div className="p-4 lg:p-5 text-slate-600 text-sm leading-relaxed border-t border-slate-50 bg-slate-50/50 animate-fade-in">
