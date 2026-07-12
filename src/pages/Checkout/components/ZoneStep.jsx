@@ -1,4 +1,3 @@
-// src/pages/Checkout/components/ZoneStep.jsx
 import React from 'react'
 import { DELIVERY_ZONES } from '../../../utils/delivery'
 import { formatRWFSimple } from '../../../utils/currency'
@@ -10,22 +9,30 @@ export default function ZoneStep({ selectedZone, setSelectedZone, language }) {
         <span className="w-8 h-8 rounded-full bg-sky-500 text-white flex items-center justify-center text-xs shadow-md">2</span>
         {language === 'en' ? 'Select Zone' : 'Hitamo Akarere'}
       </h2>
+      
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {Object.entries(DELIVERY_ZONES).map(([key, zone]) => (
-          <button 
-            key={key} 
-            type="button" 
-            onClick={() => setSelectedZone(key)} 
-            className={`p-4 rounded-2xl border-2 text-left transition-all ${
-              selectedZone === key 
-                ? 'border-sky-500 bg-sky-50/50 transform -translate-y-1' 
-                : 'border-slate-50 hover:border-slate-200'
-            }`}
-          >
-            <div className="font-black text-sm">{language === 'en' ? zone.name : zone.nameRw}</div>
-            <div className="text-[10px] font-bold text-slate-400">{formatRWFSimple(zone.fee)}</div>
-          </button>
-        ))}
+        {Object.entries(DELIVERY_ZONES).map(([key, zone]) => {
+          const isSelected = selectedZone === key;
+          return (
+            <button 
+              key={key} 
+              type="button" 
+              onClick={() => setSelectedZone(key)} 
+              className={`p-5 rounded-2xl border-2 text-left transition-all duration-200 ${
+                isSelected 
+                  ? 'border-sky-500 bg-sky-50/50 shadow-[0_4px_12px_rgba(2,132,199,0.1)] ring-1 ring-sky-500' 
+                  : 'border-slate-100 hover:border-slate-200 hover:bg-slate-50'
+              }`}
+            >
+              <div className={`font-black text-sm mb-1 ${isSelected ? 'text-sky-700' : 'text-slate-900'}`}>
+                {language === 'en' ? zone.name : zone.nameRw}
+              </div>
+              <div className="text-xs font-bold text-slate-400">
+                {formatRWFSimple(zone.fee)}
+              </div>
+            </button>
+          )
+        })}
       </div>
     </div>
   )
