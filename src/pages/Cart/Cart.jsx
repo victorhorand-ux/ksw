@@ -1,14 +1,16 @@
 // src/pages/Cart/Cart.jsx
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import useCartStore from '../../stores/cartStore'
 import useLanguageStore from '../../stores/languageStore'
 import { formatRWF } from '../../utils/currency'
+import Button from '../../components/ui/Button' // 🚀 Import Button
 
 import CartItem from './components/CartItem'
 import OrderSummary from './components/OrderSummary'
 
 export default function Cart() {
+  const navigate = useNavigate()
   const items = useCartStore((state) => state.items)
   const updateQuantity = useCartStore((state) => state.updateQuantity)
   const removeItem = useCartStore((state) => state.removeItem)
@@ -32,9 +34,15 @@ export default function Cart() {
         <p className="text-slate-500 mb-8">
           {language === 'en' ? 'Looks like you haven\'t added any gear yet.' : 'Nta bikoresho urashyiramo.'}
         </p>
-        <Link to="/products" className="bg-slate-900 hover:bg-slate-800 text-white font-bold px-8 py-3 rounded-full transition shadow-lg hover:-translate-y-1 transform duration-200">
+        
+        {/* 🚀 Refactored to use the reusable Button component */}
+        <Button 
+          variant="primary" 
+          size="lg" 
+          onClick={() => navigate('/products')}
+        >
           {language === 'en' ? 'Start Shopping' : 'Tangira Gucuruza'}
-        </Link>
+        </Button>
       </div>
     )
   }

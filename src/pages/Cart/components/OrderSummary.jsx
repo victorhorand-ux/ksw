@@ -1,9 +1,10 @@
-// src/pages/Cart/components/OrderSummary.jsx
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom' // 🚀 Changed to useNavigate for button compatibility
 import { formatRWF } from '../../../utils/currency'
+import Button from '../../../components/ui/Button' // 🚀 Imported Button
 
 export default function OrderSummary({ language, total, freeShippingThreshold }) {
+  const navigate = useNavigate()
   const deliveryFee = total >= freeShippingThreshold ? 0 : 2000
   const finalTotal = total + deliveryFee
 
@@ -37,16 +38,19 @@ export default function OrderSummary({ language, total, freeShippingThreshold })
           {language === 'en' ? 'Including taxes' : 'Harimo imisoro'}
         </p>
 
-        <Link
-          to="/checkout"
-          className="block w-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-black py-4 rounded-xl text-center text-lg shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+        {/* 🚀 Refactored to use the reusable Button component */}
+        <Button 
+          variant="primary" 
+          size="lg" 
+          fullWidth 
+          onClick={() => navigate('/checkout')}
         >
           {language === 'en' ? 'Proceed to Checkout' : 'Kwishyura'}
-        </Link>
+        </Button>
 
         <div className="mt-4 flex flex-col items-center gap-3">
           <div className="flex items-center gap-2 text-slate-500 text-xs font-bold bg-white px-4 py-2 rounded-full shadow-sm border border-slate-100">
-            <span>🔒</span>
+            <svg className="w-4 h-4 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
             <span>{language === 'en' ? 'Secure encrypted checkout' : 'Kwishyura Bwite'}</span>
           </div>
           
