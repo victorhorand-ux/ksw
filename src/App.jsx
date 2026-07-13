@@ -15,7 +15,7 @@ import RootLayout from './layouts/RootLayout'
 import AppProvider from './components/AppProvider'
 
 // 🚀 SPEED: 100% Lazy-loaded routes
-const Home = lazy(() => import('./pages/Home'))
+const Home = lazy(() => import('./pages/Home/Home'))
 const Products = lazy(() => import('./pages/Products/Products'))
 const ProductDetail = lazy(() => import('./pages/ProductDetail/ProductDetail'))
 const Cart = lazy(() => import('./pages/Cart/Cart'))
@@ -51,12 +51,12 @@ export default function App() {
   return (
     <HelmetProvider>
       {/* 🚀 SEO: Global Default Meta Tags */}
-      <Helmet defaultTitle="Kigali Swim Shop | Premium Swimming Gear in Rwanda" titleTemplate="%s | Kigali Swim Shop">
+      <Helmet defaultTitle="KigaliSwimShop | Premium Swimming Gear in Rwanda" titleTemplate="%s | KigaliSwimShop">
         <html lang="en" />
         <meta name="description" content="Kigali's premier destination for professional swimming gear, swimwear, and accessories. Fast delivery across Rwanda." />
         <meta name="theme-color" content="#0f172a" />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="Kigali Swim Shop" />
+        <meta property="og:title" content="KigaliSwimShop" />
         <meta property="og:description" content="Kigali's premier destination for professional swimming gear, swimwear, and accessories." />
       </Helmet>
 
@@ -67,7 +67,7 @@ export default function App() {
             <Toaster 
               position="bottom-center"
               toastOptions={{
-                duration: 3000,
+                duration: 2000,
                 style: { background: '#0f172a', color: '#fff', borderRadius: '1rem', padding: '12px 24px', fontWeight: 'bold', fontSize: '14px' },
                 success: { iconTheme: { primary: '#0ea5e9', secondary: '#fff' } },
               }} 
