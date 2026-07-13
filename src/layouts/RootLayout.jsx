@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import Header from './RootLayout/Header/Header'
-import Footer from '../components/Footer'
+import Footer from '../components/Footer/Footer'
 import WhatsAppButton from '../components/WhatsAppButton'
 import useAnalyticsStore from '../stores/analyticsStore'
 import useAuthStore from '../stores/authStore'
