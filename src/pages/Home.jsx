@@ -60,7 +60,7 @@ const Home = () => {
       name: 'Marie Claire',
       nameRw: 'Marie Claire',
       text: 'Best swimming equipment store in Kigali. Highly recommended!',
-      textRw: 'Ubwoba bw\'amazi bwiza mu Kigali. Nk\'uko byagenze!',
+      textRw: 'Turizewe mu by\'amazi bwiza mu Kigali. Nk\'uko byagenze!',
       rating: 5
     },
     {
@@ -289,7 +289,7 @@ const Home = () => {
             <div><div className="text-2xl md:text-3xl mb-1.5">🚚</div><h3 className="font-semibold text-sm md:text-base text-gray-800">{language === 'en' ? 'Fast Delivery' : 'Gutanga Vuba'}</h3><p className="text-xs text-gray-500">{language === 'en' ? '24-48 hours' : 'Amasaha 24-48'}</p></div>
             <div><div className="text-2xl md:text-3xl mb-1.5">💳</div><h3 className="font-semibold text-sm md:text-base text-gray-800">{language === 'en' ? 'Secure Payment' : 'Kwishyura Bwite'}</h3><p className="text-xs text-gray-500">{language === 'en' ? 'Multiple options' : 'Amahitamo menshi'}</p></div>
             <div><div className="text-2xl md:text-3xl mb-1.5">↩️</div><h3 className="font-semibold text-sm md:text-base text-gray-800">{language === 'en' ? 'Easy Returns' : 'Gusubiza Byoroshye'}</h3><p className="text-xs text-gray-500">{language === 'en' ? '7-day policy' : 'Iminsi 7'}</p></div>
-            <div><div className="text-2xl md:text-3xl mb-1.5">⭐</div><h3 className="font-semibold text-sm md:text-base text-gray-800">{language === 'en' ? 'Quality Guaranteed' : 'Ubwoba Bw\'ubwoba'}</h3><p className="text-xs text-gray-500">{language === 'en' ? 'Authentic' : 'Iby\'ukuri'}</p></div>
+            <div><div className="text-2xl md:text-3xl mb-1.5">⭐</div><h3 className="font-semibold text-sm md:text-base text-gray-800">{language === 'en' ? 'Quality Guaranteed' : 'Quality nziza cyane'}</h3><p className="text-xs text-gray-500">{language === 'en' ? 'Authentic' : 'Iby\'ukuri'}</p></div>
           </div>
         </div>
       </section>

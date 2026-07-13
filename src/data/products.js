@@ -31,7 +31,7 @@ export const products = [
     image: '/images/goggles-1.jpg',
     images: ['/images/goggles-1.jpg'],
     description: 'Premium anti-fog swimming goggles with UV protection. Comfortable seal and adjustable straps.',
-    descriptionRw: 'Amadarubindi y\'amazi y\'ubwoko bwiza. Agabanya ubwoba, agakomeza.',
+    descriptionRw: 'Amadarubindi y\'amazi y\'ubwoko bwiza. Atuma ubona neza mu mazi.',
     brand: 'Arena',
     sizes: ['One Size'],
     colors: ['Blue', 'Black'],

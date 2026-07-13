@@ -20,7 +20,7 @@ export default function OrderSummary({ language, total, freeShippingThreshold })
           <span className="font-bold text-slate-900">{formatRWF(total)}</span>
         </div>
         <div className="flex justify-between text-slate-600">
-          <span>{language === 'en' ? 'Delivery' : 'Ubwoba'}</span>
+          <span>{language === 'en' ? 'Delivery' : 'Kubikugezaho'}</span>
           {deliveryFee === 0 ? (
             <span className="text-green-600 font-bold bg-green-50 px-2 py-0.5 rounded text-sm">{language === 'en' ? 'Free' : 'Ubuntu'}</span>
           ) : (

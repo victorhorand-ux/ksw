@@ -173,13 +173,13 @@ const Footer = () => {
             <div className="flex items-center space-x-2">
               <img src="/logo.png" alt="Logo" className="w-10 h-10 object-contain" />
               <h3 className="text-2xl font-bold tracking-tight text-white">
-                {language === 'en' ? 'Kigali Swim Shop' : 'Ubwoba Kigali'}
+                {language === 'en' ? 'KigaliSwimShop' : 'KigaliSwimShop'}
               </h3>
             </div>
             <p className="text-slate-400 leading-relaxed">
               {language === 'en' 
                 ? 'Your trusted swimming equipment store in Kigali, Rwanda. Professional gear for every swimmer.'
-                : 'Ubwoba bw\'amazi bw\'ubwoba bw\'amazi mu Kigali, u Rwanda. Ibikoresho by\'abanyamwuga.'
+                : 'Turizewe muby\'amazi bw\'turizewe muby\'amazi mu Kigali, u Rwanda. Ibikoresho by\'abanyamwuga.'
               }
             </p>
             

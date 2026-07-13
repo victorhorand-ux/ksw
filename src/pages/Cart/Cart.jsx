@@ -29,7 +29,7 @@ export default function Cart() {
           <span className="text-4xl opacity-50">🛒</span>
         </div>
         <h2 className="text-2xl font-bold mb-2 text-slate-800">
-          {language === 'en' ? 'Your cart is empty' : 'Gafuni yawe nta cyo irimo'}
+          {language === 'en' ? 'Your cart is empty' : 'Igikapu cyawe ntakintu kirimo'}
         </h2>
         <p className="text-slate-500 mb-8">
           {language === 'en' ? 'Looks like you haven\'t added any gear yet.' : 'Nta bikoresho urashyiramo.'}
@@ -51,7 +51,7 @@ export default function Cart() {
     <div className="bg-slate-50 min-h-screen py-8 lg:py-12">
       <div className="container mx-auto px-4 max-w-6xl">
         <h1 className="text-3xl md:text-4xl font-black text-slate-900 mb-8 tracking-tight">
-          {language === 'en' ? 'Your Bag' : 'Gafuni Yawe'} 
+          {language === 'en' ? 'Your Bag' : 'Igikapu cyawe'} 
           <span className="text-lg font-medium text-slate-400 ml-3">
             ({items.length} {items.length === 1 ? 'item' : 'items'})
           </span>
@@ -71,8 +71,8 @@ export default function Cart() {
                    <div className="flex justify-between text-sm font-bold">
                      <span className={progress === 100 ? 'text-green-600' : 'text-slate-700'}>
                        {progress === 100 
-                         ? (language === 'en' ? 'Free Shipping Unlocked! 🎉' : 'Ubwoba bw\'ubuntu! 🎉')
-                         : (language === 'en' ? `Spend ${formatRWF(freeShippingThreshold - total)} for Free Shipping` : `Koresha ${formatRWF(freeShippingThreshold - total)} kugirango ubone ubwoba bw'ubuntu`)
+                         ? (language === 'en' ? 'Free Shipping Unlocked! 🎉' : 'Tubikugezaho k\'ubuntu! 🎉')
+                         : (language === 'en' ? `Spend ${formatRWF(freeShippingThreshold - total)} for Free Shipping` : `Koresha ${formatRWF(freeShippingThreshold - total)} kugirango ubone transport k'ubuntu`)
                        }
                      </span>
                      <span className="text-slate-400 font-medium hidden sm:block">{Math.round(progress)}%</span>
