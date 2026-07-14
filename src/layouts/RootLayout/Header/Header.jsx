@@ -45,7 +45,7 @@ export default function Header() {
             <Link to="/" className="flex items-center gap-2 group shrink-0">
               <img src="/logo.png" alt="Logo" className="w-10 h-10 object-contain group-hover:scale-110 transition-transform" />
               <div className={`font-black text-xl leading-none ${isScrolled || !isHome ? 'text-slate-900' : 'text-white'}`}>
-                KIGALI<br /><span className={isScrolled || !isHome ? 'text-sky-600' : 'text-sky-300'}>SWIM</span>
+                KIGALI<br /><span className={isScrolled || !isHome ? 'text-sky-600' : 'text-sky-300'}>SWIMSHOP</span>
               </div>
             </Link>
 
