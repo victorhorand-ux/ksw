@@ -2,28 +2,91 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-    <title>KigaliSwimShop | #1 Swimming Equipment in Rwanda</title>
+    <!-- === PERFORMANCE & FONTS === -->
+    <!-- Preconnect to external domains to speed up loading times (Crucial for SEO) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://www.googletagmanager.com">
+    <!-- Premium Font: Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- === CORE SEO === -->
+    <title>KigaliSwimShop | #1 Swimming Equipment Store in Rwanda</title>
     <meta name="title" content="KigaliSwimShop | Professional Swimming Gear in Rwanda" />
-    <meta name="description" content="Rwanda's leading store for professional swimming gear. Shop high-quality goggles, fins, swimsuits, and accessories with fast delivery in Kigali." />
-    <meta name="keywords" content="swimming goggles Kigali, swim shop Rwanda, swimming equipment Kigali, KigaliSwimShop, swimsuits Kigali" />
+    <meta name="description" content="Rwanda's leading store for professional swimming gear. Shop high-quality goggles, fins, swimsuits, and accessories with fast delivery anywhere in Kigali." />
+    <meta name="keywords" content="swimming goggles Kigali, swim shop Rwanda, swimming equipment Kigali, KigaliSwimShop, swimsuits Kigali, buy swimwear Rwanda" />
+    <meta name="author" content="Kigali Swim Shop" />
+    
+    <!-- Instructs search engines to index this page and follow its links -->
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <!-- Prevents duplicate content penalties by telling Google this is the master URL -->
+    <link rel="canonical" href="https://kigaliswimshop.online/" />
+
+    <!-- === APP ICONS & THEME === -->
+    <link rel="icon" type="image/png" href="/logo.png" />
+    <link rel="apple-touch-icon" href="/logo.png" />
     <meta name="theme-color" content="#0f172a" />
     <link rel="manifest" href="/manifest.json" />
 
+    <!-- === OPEN GRAPH (Facebook, WhatsApp, LinkedIn) === -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://swimshop.online/" />
+    <meta property="og:url" content="https://kigaliswimshop.online/" />
+    <meta property="og:site_name" content="Kigali Swim Shop" />
     <meta property="og:title" content="KigaliSwimShop | Premium Gear for All Swimmers" />
     <meta property="og:description" content="Quality swimming gear for serious swimmers, families, and clubs in Kigali. Fast delivery guaranteed." />
-    <meta property="og:image" content="https://swimshop.online/og-image.jpg" />
+    <meta property="og:image" content="https://kigaliswimshop.online/og-image.jpg" />
 
+    <!-- === TWITTER CARDS === -->
     <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://swimshop.online/" />
+    <meta property="twitter:url" content="https://kigaliswimshop.online/" />
     <meta property="twitter:title" content="KigaliSwimShop | Professional Swimming Gear" />
     <meta property="twitter:description" content="Equip yourself with Rwanda's #1 performance swimming gear." />
-    <meta property="twitter:image" content="https://swimshop.online/og-image.jpg" />
+    <meta property="twitter:image" content="https://kigaliswimshop.online/og-image.jpg" />
 
+    <!-- === LOCAL BUSINESS SCHEMA (JSON-LD) === -->
+    <!-- This is the absolute best thing you can do for Local SEO. It feeds Google your exact business data to display in the "Map Pack" and rich search results. -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SportsStore",
+      "name": "Kigali Swim Shop",
+      "image": "https://kigaliswimshop.online/og-image.jpg",
+      "@id": "https://kigaliswimshop.online/",
+      "url": "https://kigaliswimshop.online/",
+      "telephone": "+250784154697",
+      "email": "director@kigaliswimshop.online",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Kigali Heights, Kimihurura",
+        "addressLocality": "Kigali",
+        "addressRegion": "Kigali City",
+        "addressCountry": "RW"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": -1.9536,
+        "longitude": 30.0936
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday"
+        ],
+        "opens": "09:00",
+        "closes": "20:00"
+      },
+      "priceRange": "$$"
+    }
+    </script>
+
+    <!-- === GOOGLE ANALYTICS (GA4) === -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-KWCSDY3LQM"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -32,9 +95,13 @@
       gtag('config', 'G-KWCSDY3LQM');
     </script>
   </head>
-  <body>
+  
+  <body class="antialiased text-slate-900 bg-slate-50">
+    <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+    
+    <!-- === PWA SERVICE WORKER === -->
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
