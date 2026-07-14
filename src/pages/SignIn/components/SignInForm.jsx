@@ -99,9 +99,6 @@ export default function SignInForm({ language, setIsForgotMode }) {
           />
           {errors.password && <span className="text-[10px] font-bold text-rose-500 mt-1 ml-1 uppercase">Required</span>}
         </div>
-
-        {/* 🚀 Replaced HTML button with Button component. 
-            Kept the dark aesthetic (!bg-slate-900) to match your original design intent! */}
         <Button
           type="submit"
           fullWidth
