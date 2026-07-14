@@ -11,14 +11,16 @@ export default function SignIn() {
   const [isForgotMode, setIsForgotMode] = useState(false)
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4 pt-32 pb-12">
+    // 🚀 Removed min-h-screen and replaced it with sensible padding (py-10)
+    <div className="py-10 md:py-16 flex items-center justify-center bg-slate-50 px-4">
       <div className="max-w-4xl w-full bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row border border-slate-100">
         
         {/* LEFT COLUMN: STATIC HERO IMAGE */}
         <AuthHero language={language} />
 
         {/* RIGHT COLUMN: DYNAMIC FORMS */}
-        <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center min-h-[500px]">
+        {/* 🚀 Shrunk top/bottom padding and completely removed min-h-[500px] */}
+        <div className="w-full md:w-1/2 px-6 py-6 md:px-12 md:py-8 flex flex-col justify-center">
           {isForgotMode ? (
             <ForgotPasswordForm 
               language={language} 

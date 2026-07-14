@@ -1,4 +1,3 @@
-// src/layouts/RootLayout/Header/components/MobileMenuSlideout.jsx
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import useLanguageStore from '../../../../stores/languageStore'
@@ -57,26 +56,30 @@ export default function MobileMenuSlideout({ isOpen, setIsOpen }) {
             <svg className="w-5 h-5 text-slate-400 absolute left-3 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
           </form>
 
-          {/* Mobile Categories */}
+          {/* 🚀 UPDATED: Mobile Categories (Normal Buttons without Icons) */}
           <div className="space-y-4">
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Categories</p>
-            <div className="grid grid-cols-2 gap-3">
+            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+              {language === 'en' ? 'Categories' : 'Ibyiciro'}
+            </p>
+            <div className="flex flex-wrap gap-2">
               {categories.map((cat) => (
                 <Link 
                   key={cat.id} 
                   to={`/products?category=${cat.id}`}
-                  className="flex flex-col items-center justify-center p-4 rounded-xl bg-slate-50 hover:bg-sky-50 transition border border-slate-100"
+                  className="px-4 py-2.5 rounded-xl border border-slate-200 bg-white hover:border-sky-500 hover:text-sky-600 hover:bg-sky-50 text-sm font-bold text-slate-700 shadow-sm transition-all"
                   onClick={closeMenu}
                 >
-                  <span className="text-2xl mb-2">{cat.icon}</span>
-                  <span className="text-xs font-bold text-slate-700 text-center">{language === 'en' ? cat.name : cat.nameRw}</span>
+                  {language === 'en' ? cat.name : cat.nameRw}
                 </Link>
               ))}
             </div>
           </div>
 
           {/* Mobile Links */}
-          <div className="space-y-1">
+          <div className="space-y-1 pt-2">
+            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">
+              {language === 'en' ? 'Quick Links' : 'Amahuza'}
+            </p>
             <Link to="/" onClick={closeMenu} className="block px-4 py-3 rounded-xl hover:bg-slate-50 font-bold text-slate-700">Home</Link>
             <Link to="/products" onClick={closeMenu} className="block px-4 py-3 rounded-xl hover:bg-slate-50 font-bold text-slate-700">All Products</Link>
             {user && (
