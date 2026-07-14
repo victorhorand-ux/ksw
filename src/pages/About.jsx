@@ -19,7 +19,7 @@ export default function About() {
 
   return (
     // 🚀 SEO: Wrapped the whole page in a semantic <main> tag
-    <main className="min-h-screen bg-slate-50 pt-24 pb-16 md:pt-32 md:pb-24 overflow-hidden">
+    <main className="min-h-screen bg-slate-50 overflow-hidden">
       <div className="container mx-auto max-w-6xl px-4">
         
         {/* === HEADER & SEO TITLE === */}
