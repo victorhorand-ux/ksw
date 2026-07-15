@@ -7,20 +7,20 @@ export default function PaymentInstructions({
   onConfirm, 
   isSubmitting, 
   language,
-  paymentMethod // 🚀 Added this prop
+  paymentMethod  
 }) {
   
   // Helper to show instructions based on selected method
   const renderInstructions = () => {
     switch (paymentMethod) {
       case 'mtn':
-        return language === 'en' ? 'MTN MoMo: *182*... to 078xxxxxxx' : 'MTN MoMo: Kanda *182*... kuri 078xxxxxxx'
+        return language === 'en' ? 'MTN MoMo: *182*1*1*0784154697# (Name: Remy Shingiro Rukundo)' : 'MTN MoMo: Kanda *182*1*1*0784154697# (Name: Remy Shingiro Rukundo)'
       case 'airtel':
-        return language === 'en' ? 'Airtel Money: *500*... to 073xxxxxxx' : 'Airtel Money: Kanda *500*... kuri 073xxxxxxx'
+        return language === 'en' ? 'Airtel Money: *500# to 0724975735 (Name: Remy Shingiro Rukundo)' : 'Airtel Money: Kanda *500# kuri 0724975735 (Izina: Remy Shingiro Rukundo)'
       case 'bank':
         return language === 'en' 
-          ? 'Bank: BK Account 000xxxx-xx (Name: Kigali Swim Shop)' 
-          : 'Banki: Konti ya BK 000xxxx-xx (Izina: Kigali Swim Shop)'
+          ? ' EQUITY BANK: 400 5100 907 364  (Name: Remy Shingiro Rukundo)' 
+          : ' Konti ya EQUITY BANK: 400 5100 907 364 (Izina: Remy Shingiro Rukundo)'
       default:
         return ''
     }
