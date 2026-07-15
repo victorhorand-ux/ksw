@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import { HelmetProvider } from 'react-helmet-async' // <-- 1. Imported HelmetProvider
 import App from './App.jsx'
 import './index.css'
 import { errorHandler } from './utils/errorHandler'
@@ -17,9 +18,9 @@ if (typeof window !== 'undefined') {
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <App />
+    {/* 2. Wrapped App with HelmetProvider */}
+    <HelmetProvider>
+      <App />
+    </HelmetProvider>
   </React.StrictMode>,
 )
-
-
-

@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
-// 🚀 1. Added useNavigate
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { toast } from 'react-hot-toast'; // Added for better UX
+import { toast } from 'react-hot-toast'; 
 
-// Swapped Zustand for our new ultra-fast React Query hooks
 import { useProduct } from '../../hooks/queries/useProduct';
 import { useProducts } from '../../hooks/queries/useProducts';
 
@@ -18,9 +16,12 @@ import RelatedProducts from './components/RelatedProducts';
 import MobileBuyBar from './components/MobileBuyBar';
 import SizeGuideModal from './components/SizeGuideModal';
 
+// 🚀 1. IMPORT THE NEW SEO COMPONENT
+import SEO from '../../components/SEO';
+
 export default function ProductDetail() {
   const { slug } = useParams();
-  const navigate = useNavigate(); // 🚀 2. Initialize navigate
+  const navigate = useNavigate();
   
   const language = useLanguageStore((state) => state.language);
   const trackProductView = useAnalyticsStore((state) => state.trackProductView);
@@ -48,15 +49,13 @@ export default function ProductDetail() {
   }, [slug, product, trackProductView]);
 
   const handleAddToCart = () => {
-    if (!product || !product.inStock) return; // Security Check
+    if (!product || !product.inStock) return; 
     addItem({ ...product, selectedSize, selectedColor }, quantity);
     toast.success(language === 'en' ? 'Added to cart!' : 'Yashyizwe mu gitebo!');
   };
 
-  // 🚀 3. Create the Buy Now function
   const handleBuyNow = () => {
     if (!product || !product.inStock) return;
-    // Add to cart, then immediately teleport to checkout
     addItem({ ...product, selectedSize, selectedColor }, quantity);
     navigate('/checkout');
   };
@@ -88,6 +87,15 @@ export default function ProductDetail() {
   return (
     <div key={product.id} className="bg-white min-h-screen pb-24 lg:pb-0 animate-fade-in">
       
+      {/* 🚀 2. INJECT DYNAMIC SEO HERE */}
+      <SEO 
+        title={language === 'en' ? product.name : product.nameRw}
+        description={language === 'en' ? product.description : product.descriptionRw}
+        // Safely grabs the first image from an array, or a direct image property
+        image={product.images?.[0] || product.image || product.imageUrl} 
+        url={`https://swimshop.online/product/${slug}`}
+      />
+
       {/* Breadcrumbs */}
       <div className="bg-slate-50 border-b border-slate-100">
         <div className="container mx-auto px-4 py-4 max-w-6xl">
@@ -120,7 +128,7 @@ export default function ProductDetail() {
             quantity={quantity}
             setQuantity={setQuantity}
             onAddToCart={handleAddToCart}
-            onBuyNow={handleBuyNow} // 🚀 4. Passed down to Action Panel
+            onBuyNow={handleBuyNow} 
             onOpenSizeChart={() => setShowSizeChart(true)}
           />
 
@@ -140,7 +148,7 @@ export default function ProductDetail() {
         language={language} 
         quantity={quantity} 
         onAddToCart={handleAddToCart}
-        onBuyNow={handleBuyNow} // 🚀 5. Passed down to Mobile Bar
+        onBuyNow={handleBuyNow} 
       />
 
       {/* Extracted: Size Chart Modal */}
