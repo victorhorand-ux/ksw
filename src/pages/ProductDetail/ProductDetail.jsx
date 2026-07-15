@@ -93,7 +93,7 @@ export default function ProductDetail() {
         description={language === 'en' ? product.description : product.descriptionRw}
         // Safely grabs the first image from an array, or a direct image property
         image={product.images?.[0] || product.image || product.imageUrl} 
-        url={`https://swimshop.online/product/${slug}`}
+        url={`https://kigaliswimshop.online/product/${slug}`}
       />
 
       {/* Breadcrumbs */}
