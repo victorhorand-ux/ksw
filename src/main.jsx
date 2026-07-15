@@ -1,6 +1,7 @@
 import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { HelmetProvider } from 'react-helmet-async' // <-- 1. Imported HelmetProvider
+// 🚀 1. Import both hydrateRoot and createRoot
+import { hydrateRoot, createRoot } from 'react-dom/client' 
+import { HelmetProvider } from 'react-helmet-async'
 import App from './App.jsx'
 import './index.css'
 import { errorHandler } from './utils/errorHandler'
@@ -16,11 +17,23 @@ if (typeof window !== 'undefined') {
   })
 }
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+const container = document.getElementById('root');
+
+// 🚀 2. Store your app structure in a variable
+const appContent = (
   <React.StrictMode>
-    {/* 2. Wrapped App with HelmetProvider */}
     <HelmetProvider>
       <App />
     </HelmetProvider>
-  </React.StrictMode>,
-)
+  </React.StrictMode>
+);
+
+// 🚀 3. Smart Rendering Logic for Pre-rendering
+if (container.hasChildNodes()) {
+  // If react-snap built the static HTML, hydrate it for instant loading
+  hydrateRoot(container, appContent);
+} else {
+  // Otherwise (like during local dev), render it normally from scratch
+  const root = createRoot(container);
+  root.render(appContent);
+}
