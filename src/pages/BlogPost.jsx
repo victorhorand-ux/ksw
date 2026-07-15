@@ -16,7 +16,7 @@ const BlogPost = () => {
     const foundPost = posts.find(p => p.slug === slug)
     if (foundPost) {
       setPost(foundPost)
-      document.title = `${foundPost.title} | Kigali Swim Shop`
+      document.title = `${foundPost.title} | KigaliSwimShop`
       window.scrollTo(0, 0)
     }
   }, [slug, posts])
@@ -37,7 +37,7 @@ const BlogPost = () => {
             {post.title}
           </h1>
           <div className="flex items-center gap-4 text-slate-300 font-medium text-sm">
-            <span>By {post.author || 'Kigali Swim Shop'}</span>
+            <span>By {post.author || 'KigaliSwimShop'}</span>
             <span>•</span>
             <time>{new Date(post.publishedAt).toLocaleDateString()}</time>
           </div>

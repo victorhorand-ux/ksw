@@ -7,10 +7,10 @@ const ProductSchema = ({ product }) => {
     "@type": "Product",
     "name": product.name,
     "image": product.image,
-    "description": product.description || `Buy ${product.name} at Kigali Swim Shop Rwanda.`,
+    "description": product.description || `Buy ${product.name} at KigaliSwimShop Rwanda.`,
     "brand": {
       "@type": "Brand",
-      "name": "Kigali Swim Shop"
+      "name": "KigaliSwimShop"
     },
     "offers": {
       "@type": "Offer",

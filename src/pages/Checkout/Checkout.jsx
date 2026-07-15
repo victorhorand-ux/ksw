@@ -84,7 +84,7 @@ export default function Checkout() {
       setLastOrder(orderPayload)
       
       // 2. BUILD THE WHATSAPP MESSAGE
-      let message = `*NEW ORDER - Kigali Swim Shop* 🏊‍♂️\n\n`;
+      let message = `*NEW ORDER - KigaliSwimShop* 🏊‍♂️\n\n`;
       message += `*Customer:* ${orderPayload.customer.fullName}\n`;
       message += `*Phone:* ${orderPayload.customer.phone}\n`;
       message += `*Address:* ${orderPayload.customer.address} (${selectedZone})\n\n`;

@@ -23,8 +23,8 @@ export default function ProductActionPanel({
   const discountPercentage = hasDiscount ? Math.round(((originalPrice - price) / originalPrice) * 100) : 0;
 
   // SEO Boosting Default Descriptions
-  const defaultDescriptionEn = `Upgrade your swimming experience with our premium ${product.name}. Sourced for durability, comfort, and top-tier performance, this is essential gear for both professional athletes and leisure swimmers in Rwanda. Order today from Kigali Swim Shop and enjoy 2-hour fast delivery anywhere in Kigali, complete with secure Mobile Money (MoMo) payments. Dive in with the best!`;
-  const defaultDescriptionRw = `Gura ${product.nameRw || product.name} nziza cyane muri Kigali Swim Shop. Ibikoresho byizewe byo koga mu Rwanda, bikozwe kubw'ihumure n'igihe kirekire. Kwishyura na MoMo, na delivery yihuse mu masaha 2 i Kigali.`;
+  const defaultDescriptionEn = `Upgrade your swimming experience with our premium ${product.name}. Sourced for durability, comfort, and top-tier performance, this is essential gear for both professional athletes and leisure swimmers in Rwanda. Order today from KigaliSwimShop and enjoy 2-hour fast delivery anywhere in Kigali, complete with secure Mobile Money (MoMo) payments. Dive in with the best!`;
+  const defaultDescriptionRw = `Gura ${product.nameRw || product.name} nziza cyane muri KigaliSwimShop. Ibikoresho byizewe byo koga mu Rwanda, bikozwe kubw'ihumure n'igihe kirekire. Kwishyura na MoMo, na delivery yihuse mu masaha 2 i Kigali.`;
 
   const displayDescriptionEn = product.description && product.description.trim() !== '' ? product.description : defaultDescriptionEn;
   const displayDescriptionRw = product.descriptionRw && product.descriptionRw.trim() !== '' ? product.descriptionRw : defaultDescriptionRw;
@@ -36,7 +36,7 @@ export default function ProductActionPanel({
         {/* Header */}
         <div>
           <p className="text-sky-600 font-bold tracking-widest text-xs uppercase mb-2">
-            {product.brand || 'Kigali Swim Shop'}
+            {product.brand || 'KigaliSwimShop'}
           </p>
           <h1 className="text-2xl lg:text-4xl xl:text-5xl font-black text-slate-900 leading-tight mb-4">
             {language === 'en' ? product.name : product.nameRw}

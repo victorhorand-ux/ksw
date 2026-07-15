@@ -62,7 +62,7 @@ const CreatePost = () => {
         image: postForm.image,
         content: postForm.content,
         status: postForm.status,
-        author: 'Kigali Swim Shop',
+        author: 'KigaliSwimShop',
         publishedAt: new Date().toISOString()
       };
 

@@ -10,7 +10,7 @@ const Blog = () => {
 
   useEffect(() => {
     fetchPosts()
-    document.title = "Swimming Guides & Tips in Kigali | Kigali Swim Shop"
+    document.title = "Swimming Guides & Tips in Kigali | KigaliSwimShop"
   }, [fetchPosts])
 
   if (isLoading) return <div className="text-center py-20">Loading guides...</div>

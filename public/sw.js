@@ -1,4 +1,4 @@
-// Service Worker for Kigali Swim Shop
+// Service Worker for KigaliSwimShop
 const CACHE_NAME = 'kigali-swim-shop-v1'
 const urlsToCache = [
   '/',
