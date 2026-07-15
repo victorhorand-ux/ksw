@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaInstagram, FaFacebookF, FaXTwitter, FaMobileScreenButton, FaBuildingColumns } from 'react-icons/fa6';
+import { FaInstagram, FaFacebookF, FaXTwitter, FaBuildingColumns } from 'react-icons/fa6';
 
 export default function FooterPayments({ t }) {
   const socialLinks = [
@@ -12,14 +12,28 @@ export default function FooterPayments({ t }) {
     <div>
       <h4 className="font-bold text-lg mb-4 sm:mb-6 text-white">{t.paymentMethods}</h4>
       <div className="flex flex-wrap gap-2 sm:gap-3">
+        
+        {/* MTN MoMo */}
         <div className="bg-slate-800/50 border border-slate-700/50 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl flex items-center gap-2 text-slate-300 shadow-sm">
-          <FaMobileScreenButton className="text-sky-400 text-base sm:text-lg" />
+          <img 
+            src="/momo_mtna.png" 
+            alt="MTN MoMo" 
+            className="h-4 sm:h-5 w-auto object-contain rounded-[2px]" 
+          />
           <span className="text-[11px] sm:text-xs font-bold tracking-wide">MTN Momo</span>
         </div>
+
+        {/* Airtel Money */}
         <div className="bg-slate-800/50 border border-slate-700/50 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl flex items-center gap-2 text-slate-300 shadow-sm">
-          <FaMobileScreenButton className="text-sky-400 text-base sm:text-lg" />
+          <img 
+            src="/airtel_money_logo.jpg" 
+            alt="Airtel Money" 
+            className="h-4 sm:h-5 w-auto object-contain rounded-[2px]" 
+          />
           <span className="text-[11px] sm:text-xs font-bold tracking-wide">Airtel Money</span>
         </div>
+
+        {/* Bank Transfer */}
         <div className="bg-slate-800/50 border border-slate-700/50 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl flex items-center gap-2 text-slate-300 shadow-sm">
           <FaBuildingColumns className="text-sky-400 text-base sm:text-lg" />
           <span className="text-[11px] sm:text-xs font-bold tracking-wide">Bank</span>
