@@ -12,8 +12,8 @@ import ProductModal from './components/ProductModal';
 import CategoryModal from './components/CategoryModal';
 
 import useProductStore from '../../stores/productStore';
-import useOrderStore from '../../stores/orderStore';
 import useCategoryStore from '../../stores/categoryStore';
+import { useUpdateOrderStatus } from '../../hooks/mutations/useUpdateOrderStatus';
 
 import { toast } from 'react-hot-toast';
 import { triggerCloudflareRebuild } from '../../utils/rebuildService'; 
@@ -36,7 +36,7 @@ export default function Dashboard() {
   const { data, isLoading } = useAdminData();
   
   const { addProduct, updateProduct } = useProductStore();
-  const { updateOrderStatus } = useOrderStore();
+  const { mutateAsync: updateOrderStatus } = useUpdateOrderStatus();
   const { addCategory, updateCategory, deleteCategory } = useCategoryStore();
 
   if (isLoading) return <div className="p-10 font-black text-slate-400 animate-pulse">Loading System...</div>;
@@ -59,7 +59,7 @@ export default function Dashboard() {
           orders={data.orders} 
           onUpdateStatus={async (orderId, newStatus) => {
             try {
-              await updateOrderStatus(orderId, newStatus);
+              await updateOrderStatus({ orderId, newStatus });
               toast.success(`Order updated to ${newStatus}`, { icon: '📦' });
             } catch (e) {
               toast.error('Failed to update status');
