@@ -56,7 +56,7 @@ export default function MobileMenuSlideout({ isOpen, setIsOpen }) {
             <svg className="w-5 h-5 text-slate-400 absolute left-3 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
           </form>
 
-          {/* 🚀 UPDATED: Mobile Categories (Normal Buttons without Icons) */}
+          {/* Mobile Categories */}
           <div className="space-y-4">
             <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">
               {language === 'en' ? 'Categories' : 'Ibyiciro'}
@@ -80,10 +80,20 @@ export default function MobileMenuSlideout({ isOpen, setIsOpen }) {
             <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">
               {language === 'en' ? 'Quick Links' : 'Amahuza'}
             </p>
-            <Link to="/" onClick={closeMenu} className="block px-4 py-3 rounded-xl hover:bg-slate-50 font-bold text-slate-700">Home</Link>
-            <Link to="/products" onClick={closeMenu} className="block px-4 py-3 rounded-xl hover:bg-slate-50 font-bold text-slate-700">All Products</Link>
+            <Link to="/" onClick={closeMenu} className="block px-4 py-3 rounded-xl hover:bg-slate-50 font-bold text-slate-700">
+              Home
+            </Link>
+            <Link to="/products" onClick={closeMenu} className="block px-4 py-3 rounded-xl hover:bg-slate-50 font-bold text-slate-700">
+              All Products
+            </Link>
+            {/* 🚀 ADDED: Blog Link with translation logic */}
+            <Link to="/blog" onClick={closeMenu} className="block px-4 py-3 rounded-xl hover:bg-slate-50 font-bold text-slate-700">
+              {language === 'en' ? 'Blog' : 'Inkuru'}
+            </Link>
             {user && (
-               <Link to="/profile" onClick={closeMenu} className="block px-4 py-3 rounded-xl hover:bg-slate-50 font-bold text-slate-700">My Profile</Link>
+               <Link to="/profile" onClick={closeMenu} className="block px-4 py-3 rounded-xl hover:bg-slate-50 font-bold text-slate-700">
+                 My Profile
+               </Link>
             )}
           </div>
         </div>

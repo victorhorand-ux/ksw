@@ -51,8 +51,12 @@ export default function Header() {
 
             {/* 2. DESKTOP LINKS */}
             <div className="hidden lg:flex items-center gap-8">
-               <Link to="/products" className={`font-bold text-sm uppercase ${textClass}`}>
+               <Link to="/products" className={`font-bold text-sm uppercase transition-colors ${textClass}`}>
                 {language === 'en' ? 'Shop' : 'Gura'}
+              </Link>
+              {/* 🚀 ADDED: Blog Link */}
+              <Link to="/blog" className={`font-bold text-sm uppercase transition-colors ${textClass}`}>
+                {language === 'en' ? 'Blog' : 'Inkuru'}
               </Link>
             </div>
 
@@ -63,12 +67,12 @@ export default function Header() {
             <div className="flex items-center gap-4 shrink-0">
               <button 
                 onClick={() => setLanguage(language === 'en' ? 'rw' : 'en')}
-                className={`w-8 h-8 rounded-full font-bold text-xs ${isScrolled || !isHome ? 'bg-slate-100 text-slate-700' : 'bg-white/20 text-white'}`}
+                className={`w-8 h-8 rounded-full font-bold text-xs transition-colors ${isScrolled || !isHome ? 'bg-slate-100 text-slate-700 hover:bg-slate-200' : 'bg-white/20 text-white hover:bg-white/30'}`}
               >
                 {language === 'en' ? 'RW' : 'EN'}
               </button>
 
-              <Link to="/cart" className={`p-2 rounded-full relative ${textClass}`}>
+              <Link to="/cart" className={`p-2 rounded-full relative transition-colors ${textClass}`}>
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
                 {cartItems.length > 0 && (
                   <span className="absolute -top-1 -right-1 w-5 h-5 bg-sky-500 text-white text-xs flex items-center justify-center rounded-full">
@@ -80,14 +84,14 @@ export default function Header() {
               {user ? (
                 <UserProfileDropdown user={user} signOut={signOut} />
               ) : (
-                <Link to="/login" className="hidden sm:block px-6 py-2 rounded-full font-bold text-sm bg-sky-600 text-white hover:bg-sky-700">
+                <Link to="/login" className="hidden sm:block px-6 py-2 rounded-full font-bold text-sm bg-sky-600 text-white hover:bg-sky-700 transition-colors">
                   {language === 'en' ? 'Login' : 'Injira'}
                 </Link>
               )}
 
               {/* MOBILE HAMBURGER BUTTON */}
               <button 
-                className={`lg:hidden p-1 ${isScrolled || !isHome ? 'text-slate-900' : 'text-white'}`}
+                className={`lg:hidden p-1 transition-colors ${isScrolled || !isHome ? 'text-slate-900 hover:text-sky-600' : 'text-white hover:text-sky-300'}`}
                 onClick={() => setIsMobileMenuOpen(true)}
               >
                 <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
