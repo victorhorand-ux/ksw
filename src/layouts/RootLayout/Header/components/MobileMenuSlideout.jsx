@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import useLanguageStore from '../../../../stores/languageStore'
 import useAuthStore from '../../../../stores/authStore'
 import useCategoryStore from '../../../../stores/categoryStore'
+import useHydration from '../../../../hooks/useHydration' // 🚀 1. Import the hook
 
 export default function MobileMenuSlideout({ isOpen, setIsOpen }) {
   const [searchQuery, setSearchQuery] = useState('')
@@ -11,6 +12,7 @@ export default function MobileMenuSlideout({ isOpen, setIsOpen }) {
   const { language } = useLanguageStore()
   const { user, signOut } = useAuthStore()
   const categories = useCategoryStore((state) => state.categories) || []
+  const isHydrated = useHydration() // 🚀 2. Call the hook
 
   const closeMenu = () => setIsOpen(false)
 
@@ -59,7 +61,8 @@ export default function MobileMenuSlideout({ isOpen, setIsOpen }) {
           {/* Mobile Categories */}
           <div className="space-y-4">
             <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-              {language === 'en' ? 'Categories' : 'Ibyiciro'}
+              {/* 🚀 3. Protect language read */}
+              {(!isHydrated || language === 'en') ? 'Categories' : 'Ibyiciro'}
             </p>
             <div className="flex flex-wrap gap-2">
               {categories.map((cat) => (
@@ -69,7 +72,8 @@ export default function MobileMenuSlideout({ isOpen, setIsOpen }) {
                   className="px-4 py-2.5 rounded-xl border border-slate-200 bg-white hover:border-sky-500 hover:text-sky-600 hover:bg-sky-50 text-sm font-bold text-slate-700 shadow-sm transition-all"
                   onClick={closeMenu}
                 >
-                  {language === 'en' ? cat.name : cat.nameRw}
+                  {/* 🚀 4. Protect language read */}
+                  {(!isHydrated || language === 'en') ? cat.name : cat.nameRw}
                 </Link>
               ))}
             </div>
@@ -78,7 +82,8 @@ export default function MobileMenuSlideout({ isOpen, setIsOpen }) {
           {/* Mobile Links */}
           <div className="space-y-1 pt-2">
             <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">
-              {language === 'en' ? 'Quick Links' : 'Amahuza'}
+              {/* 🚀 5. Protect language read */}
+              {(!isHydrated || language === 'en') ? 'Quick Links' : 'Amahuza'}
             </p>
             <Link to="/" onClick={closeMenu} className="block px-4 py-3 rounded-xl hover:bg-slate-50 font-bold text-slate-700">
               Home
@@ -86,9 +91,9 @@ export default function MobileMenuSlideout({ isOpen, setIsOpen }) {
             <Link to="/products" onClick={closeMenu} className="block px-4 py-3 rounded-xl hover:bg-slate-50 font-bold text-slate-700">
               All Products
             </Link>
-            {/* 🚀 ADDED: Blog Link with translation logic */}
             <Link to="/blog" onClick={closeMenu} className="block px-4 py-3 rounded-xl hover:bg-slate-50 font-bold text-slate-700">
-              {language === 'en' ? 'Blog' : 'Inkuru'}
+              {/* 🚀 6. Protect language read */}
+              {(!isHydrated || language === 'en') ? 'Blog' : 'Inkuru'}
             </Link>
             {user && (
                <Link to="/profile" onClick={closeMenu} className="block px-4 py-3 rounded-xl hover:bg-slate-50 font-bold text-slate-700">

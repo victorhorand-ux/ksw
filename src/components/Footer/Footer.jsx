@@ -4,6 +4,7 @@ import { toast } from 'react-hot-toast';
 import { collection, addDoc } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import useLanguageStore from '../../stores/languageStore';
+import useHydration from '../../hooks/useHydration'; // 🚀 1. Import the hook
 
 import FooterNewsletter from './FooterNewsletter';
 import FooterBrand from './FooterBrand';
@@ -49,13 +50,18 @@ const translations = {
 
 export default function Footer() {
   const language = useLanguageStore((state) => state.language);
+  const isHydrated = useHydration(); // 🚀 2. Call the hook
+  
   const location = useLocation();
   const [email, setEmail] = useState('');
   const [subscribeStatus, setSubscribeStatus] = useState('idle');
 
   if (location.pathname.startsWith('/admin')) return null;
 
-  const t = translations[language];
+  // 🚀 3. Protect the translation object selection
+  // If not hydrated yet, force English to match the pre-rendered HTML
+  const currentLanguage = isHydrated ? language : 'en';
+  const t = translations[currentLanguage];
 
   const handleLinkClick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
@@ -71,29 +77,30 @@ export default function Footer() {
         status: 'active'
       });
       
-      toast.success(language === 'en' ? 'Welcome to the community! 🎉' : 'Murakoze kwiyandikisha! 🎉', { id: 'footer-sub' });
+      toast.success(currentLanguage === 'en' ? 'Welcome to the community! 🎉' : 'Murakoze kwiyandikisha! 🎉', { id: 'footer-sub' });
       setSubscribeStatus('success');
       setEmail('');
       setTimeout(() => setSubscribeStatus('idle'), 3000);
     } catch (error) {
-      toast.error(language === 'en' ? 'Subscription failed. Try again.' : 'Habaye ikibazo. Ongera ugerageze.', { id: 'footer-err' });
+      toast.error(currentLanguage === 'en' ? 'Subscription failed. Try again.' : 'Habaye ikibazo. Ongera ugerageze.', { id: 'footer-err' });
       setSubscribeStatus('error');
       setTimeout(() => setSubscribeStatus('idle'), 3000);
     }
   };
 
+  // 🚀 4. Protect the link labels
   const quickLinks = [
-    { path: '/', label: language === 'en' ? 'Home' : 'Ahabanza' },
-    { path: '/products', label: language === 'en' ? 'Products' : 'Ibicuruzwa' },
-    { path: '/about', label: language === 'en' ? 'About Us' : 'Ibyerekeye' },
-    { path: '/contact', label: language === 'en' ? 'Contact' : 'Twandikire' }
+    { path: '/', label: currentLanguage === 'en' ? 'Home' : 'Ahabanza' },
+    { path: '/products', label: currentLanguage === 'en' ? 'Products' : 'Ibicuruzwa' },
+    { path: '/about', label: currentLanguage === 'en' ? 'About Us' : 'Ibyerekeye' },
+    { path: '/contact', label: currentLanguage === 'en' ? 'Contact' : 'Twandikire' }
   ];
 
   const serviceLinks = [
-    { path: '/faq', label: language === 'en' ? 'FAQs' : 'Ibibazo' },
-    { path: '/policies/returns', label: language === 'en' ? 'Returns & Exchanges' : 'Gusubiza' },
-    { path: '/policies/privacy', label: language === 'en' ? 'Privacy Policy' : 'Politiki y\'Ubwigenge' },
-    { path: '/policies/terms', label: language === 'en' ? 'Terms & Conditions' : 'Amabwiriza' }
+    { path: '/faq', label: currentLanguage === 'en' ? 'FAQs' : 'Ibibazo' },
+    { path: '/policies/returns', label: currentLanguage === 'en' ? 'Returns & Exchanges' : 'Gusubiza' },
+    { path: '/policies/privacy', label: currentLanguage === 'en' ? 'Privacy Policy' : 'Politiki y\'Ubwigenge' },
+    { path: '/policies/terms', label: currentLanguage === 'en' ? 'Terms & Conditions' : 'Amabwiriza' }
   ];
 
   return (
@@ -115,9 +122,9 @@ export default function Footer() {
           subscribeStatus={subscribeStatus} 
         />
 
-        {/* 🚀 FIXED MOBILE GRID: 1 col (mobile) -> 2 col (tablet) -> 4 col (desktop) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12">
-          <FooterBrand language={language} t={t} />
+          {/* 🚀 5. Pass the protected language down to children */}
+          <FooterBrand language={currentLanguage} t={t} />
           <FooterLinks title={t.quickLinks} links={quickLinks} handleLinkClick={handleLinkClick} />
           <FooterLinks title={t.customerService} links={serviceLinks} handleLinkClick={handleLinkClick} />
           <FooterPayments t={t} />

@@ -1,10 +1,10 @@
-// src/layouts/RootLayout/Header/Header.jsx
 import React, { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 
 import useCartStore from '../../../stores/cartStore'
 import useLanguageStore from '../../../stores/languageStore'
 import useAuthStore from '../../../stores/authStore'
+import useHydration from '../../../hooks/useHydration' // 🚀 1. Imported the new hook
 
 import DesktopSearch from './components/DesktopSearch'
 import UserProfileDropdown from './components/UserProfileDropdown'
@@ -18,6 +18,7 @@ export default function Header() {
   const cartItems = useCartStore((state) => state.items)
   const { language, setLanguage } = useLanguageStore()
   const { user, signOut } = useAuthStore()
+  const isHydrated = useHydration() // 🚀 2. Call the hook
   
   const isHome = location.pathname === '/'
 
@@ -52,11 +53,11 @@ export default function Header() {
             {/* 2. DESKTOP LINKS */}
             <div className="hidden lg:flex items-center gap-8">
                <Link to="/products" className={`font-bold text-sm uppercase transition-colors ${textClass}`}>
-                {language === 'en' ? 'Shop' : 'Gura'}
+                {/* 🚀 3. Protect language read with isHydrated */}
+                {(!isHydrated || language === 'en') ? 'Shop' : 'Gura'}
               </Link>
-              {/* 🚀 ADDED: Blog Link */}
               <Link to="/blog" className={`font-bold text-sm uppercase transition-colors ${textClass}`}>
-                {language === 'en' ? 'Blog' : 'Inkuru'}
+                {(!isHydrated || language === 'en') ? 'Blog' : 'Inkuru'}
               </Link>
             </div>
 
@@ -69,12 +70,14 @@ export default function Header() {
                 onClick={() => setLanguage(language === 'en' ? 'rw' : 'en')}
                 className={`w-8 h-8 rounded-full font-bold text-xs transition-colors ${isScrolled || !isHome ? 'bg-slate-100 text-slate-700 hover:bg-slate-200' : 'bg-white/20 text-white hover:bg-white/30'}`}
               >
-                {language === 'en' ? 'RW' : 'EN'}
+                {/* 🚀 4. Protect language toggle text */}
+                {(!isHydrated || language === 'en') ? 'RW' : 'EN'}
               </button>
 
               <Link to="/cart" className={`p-2 rounded-full relative transition-colors ${textClass}`}>
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
-                {cartItems.length > 0 && (
+                {/* 🚀 5. Protect cart count - Default to 0 before hydration */}
+                {(isHydrated && cartItems.length > 0) && (
                   <span className="absolute -top-1 -right-1 w-5 h-5 bg-sky-500 text-white text-xs flex items-center justify-center rounded-full">
                     {cartItems.length}
                   </span>
@@ -85,7 +88,7 @@ export default function Header() {
                 <UserProfileDropdown user={user} signOut={signOut} />
               ) : (
                 <Link to="/login" className="hidden sm:block px-6 py-2 rounded-full font-bold text-sm bg-sky-600 text-white hover:bg-sky-700 transition-colors">
-                  {language === 'en' ? 'Login' : 'Injira'}
+                  {(!isHydrated || language === 'en') ? 'Login' : 'Injira'}
                 </Link>
               )}
 
