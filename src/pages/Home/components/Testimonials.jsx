@@ -1,41 +1,40 @@
 import React from 'react';
 
 export default function Testimonials({ language }) {
-  const testimonials = [
-    {
-      name: 'Jean Paul',
-      nameRw: 'Jean Paul',
-      // 🚀 Updated to feature Black/African individuals
-      image: 'https://images.unsplash.com/photo-1530268729831-4b0b9e170218?w=150&h=150&fit=crop&crop=faces',
-      text: 'Great quality products and fast delivery! Very satisfied with my purchase.',
-      textRw: "Ibicuruzwa by'ubwoko bwiza kandi byongeyeho vuba! Nari nishimiye.",
-      rating: 5
-    },
-    {
-      name: 'Marie Claire',
-      nameRw: 'Marie Claire',
-      image: 'https://images.unsplash.com/photo-1531123897727-8f129e1bf98a?w=150&h=150&fit=crop&crop=faces',
-      text: 'Best swimming equipment store in Kigali. Highly recommended!',
-      textRw: "Turizewe mu by'amazi bwiza mu Kigali. Nk'uko byagenze!",
-      rating: 5
-    },
-    {
-      name: 'David Nkurunziza',
-      nameRw: 'David Nkurunziza',
-      image: 'https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?w=150&h=150&fit=crop&crop=faces',
-      text: 'Excellent customer service and authentic products. Will shop again!',
-      textRw: "Serivisi nziza z'abakiriya kandi ibicuruzwa by'ukuri. Nzongera guhaha!",
-      rating: 5
-    },
-    {
-      name: 'Aline Uwamahoro',
-      nameRw: 'Aline Uwamahoro',
-      image: 'https://images.unsplash.com/photo-1531303435785-385316288a7c?w=150&h=150&fit=crop&crop=faces',
-      text: 'The swimsuits are durable and fit perfectly. My kids love them.',
-      textRw: "Imyenda yo koga irakomeye kandi ibakwira neza. Abana banjye barayikunda.",
-      rating: 5
-    }
-  ];
+const testimonials = [
+  {
+    name: 'Branson Paul',
+    nameRw: 'Branson Paul',
+    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=faces&auto=format&q=80',
+    text: 'Great quality products and fast delivery! Very satisfied with my purchase.',
+    textRw: "Ibicuruzwa by'ubwoko bwiza kandi byongeyeho vuba! Nari nishimiye.",
+    rating: 5
+  },
+  {
+    name: 'Marie Claire',
+    nameRw: 'Marie Claire',
+    image: 'https://images.unsplash.com/photo-1531123414780-f74242c2b052?w=150&h=150&fit=crop&crop=faces&auto=format&q=80',
+    text: 'Best swimming equipment store in Kigali. Highly recommended!',
+    textRw: "Turizewe mu by'amazi bwiza mu Kigali. Nk'uko byagenze!",
+    rating: 5
+  },
+  {
+    name: 'David Nkurunziza',
+    nameRw: 'David Nkurunziza',
+    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=faces&auto=format&q=80',
+    text: 'Excellent customer service and authentic products. Will shop again!',
+    textRw: "Serivisi nziza z'abakiriya kandi ibicuruzwa by'ukuri. Nzongera guhaha!",
+    rating: 5
+  },
+  {
+    name: 'Cheryl Ben',
+    nameRw: 'Cheryl Ben',
+    image: 'https://images.unsplash.com/photo-1515023115689-589c33041d3c?w=150&h=150&fit=crop&crop=faces&auto=format&q=80',
+    text: 'The swimsuits are durable and fit perfectly. My kids love them.',
+    textRw: "Imyenda yo koga irakomeye kandi ibakwira neza. Abana banjye barayikunda.",
+    rating: 5
+  }
+];
 
   const TestimonialTrack = () => (
     // 🚀 Tighter gap between cards
