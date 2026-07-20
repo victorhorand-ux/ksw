@@ -91,6 +91,8 @@ export default function App() {
                     <Route path="/policies/returns" element={<ReturnPolicy />} />
                     <Route path="/policies/privacy" element={<PrivacyPolicy />} />
                     <Route path="/policies/terms" element={<Terms />} />
+                    <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                    <Route path="/terms" element={<Terms />} />
                     <Route path="/signup" element={<SignUp />} />
                     <Route path="/login" element={<SignIn />} />
                     <Route path="/blog" element={<Blog />} />
