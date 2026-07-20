@@ -7,11 +7,16 @@ export function useCategories() {
   return useQuery({
     queryKey: ['categories'],
     queryFn: async () => {
-      const querySnapshot = await getDocs(collection(db, 'categories'))
-      return querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }))
+      try {
+        const querySnapshot = await getDocs(collection(db, 'categories'))
+        return querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }))
+      } catch (error) {
+        console.warn('Categories query failed, returning empty list.', error)
+        return []
+      }
     }
   })
 }

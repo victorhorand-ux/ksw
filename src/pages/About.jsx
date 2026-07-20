@@ -49,6 +49,8 @@ export default function About() {
               src="https://images.unsplash.com/photo-1530549387789-4c1017266635?q=80&w=2070&auto=format&fit=crop" 
               alt="Professional Swimming Gear in Kigali" 
               className="w-full h-full object-cover"
+              width={1200}
+              height={800}
             />
           </div>
           

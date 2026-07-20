@@ -6,11 +6,16 @@ export function useProducts() {
   return useQuery({
     queryKey: ['products'],
     queryFn: async () => {
-      const snapshot = await getDocs(collection(db, 'products'));
-      return snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
+      try {
+        const snapshot = await getDocs(collection(db, 'products'));
+        return snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+      } catch (error) {
+        console.warn('Products query failed, returning empty list.', error);
+        return [];
+      }
     }
   });
 }

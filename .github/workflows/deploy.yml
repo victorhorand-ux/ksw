@@ -1,0 +1,38 @@
+name: Build and Deploy to Cloudflare Pages
+
+on:
+  push:
+    branches:
+      - main # Change to master if your default branch is master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Uses a modern Node version
+
+      - name: Install Dependencies
+        run: npm ci # Safer than npm install for CI environments
+
+      - name: Build and Pre-render (React Snap)
+        # This will execute Vite build and React Snap flawlessly on GitHub's servers
+        run: npm run build
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: 'indimo-leasure'
+          directory: 'dist' # The output folder created by Vite
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}

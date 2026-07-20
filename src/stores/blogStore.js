@@ -27,8 +27,8 @@ const useBlogStore = create((set, get) => ({
       
       set({ posts: postsData, isLoading: false })
     } catch (error) {
-      console.error("Error fetching blog posts:", error);
-      set({ error: error.message, isLoading: false })
+      console.warn("Blog posts unavailable right now.", error);
+      set({ posts: [], error: error.message, isLoading: false })
     }
   },
 
@@ -56,7 +56,7 @@ const useBlogStore = create((set, get) => ({
       
       return null; // Post actually does not exist
     } catch (error) {
-      console.error("Error fetching single post:", error);
+      console.warn("Single blog post unavailable right now.", error);
       return null;
     }
   }
