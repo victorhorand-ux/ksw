@@ -10,6 +10,7 @@ import SubscribersTab from './tabs/SubscribersTab';
 import PostsTab from './tabs/PostsTab'; 
 import ProductModal from './components/ProductModal';
 import CategoryModal from './components/CategoryModal';
+import ConfirmActionModal from './components/ConfirmActionModal';
 
 import useProductStore from '../../stores/productStore';
 import useCategoryStore from '../../stores/categoryStore';
@@ -31,6 +32,7 @@ export default function Dashboard() {
   // Category State
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
+  const [confirmState, setConfirmState] = useState({ open: false, type: null, payload: null, loading: false });
   
   const queryClient = useQueryClient();
   const { data, isLoading } = useAdminData();
@@ -73,16 +75,8 @@ export default function Dashboard() {
           categories={data.categories}
           onAdd={() => { setEditingCategory(null); setShowCategoryModal(true); }}
           onEdit={(cat) => { setEditingCategory(cat); setShowCategoryModal(true); }}
-          onDelete={async (catId) => {
-            if (window.confirm('Delete this category?')) {
-              try {
-                await deleteCategory(catId);
-                toast.success('Category removed');
-                triggerCloudflareRebuild(); 
-              } catch (e) {
-                toast.error('Failed to remove category');
-              }
-            }
+          onDelete={(catId) => {
+            setConfirmState({ open: true, type: 'category', payload: catId, loading: false });
           }}
         />
       )}
@@ -104,17 +98,8 @@ export default function Dashboard() {
               toast.error('Failed to update status');
             }
           }}
-          onDelete={async (postId) => {
-            if (window.confirm('Permanently delete this article?')) {
-              try {
-                await deleteDoc(doc(db, 'posts', postId));
-                toast.success('Article deleted');
-                triggerCloudflareRebuild(); 
-                queryClient.invalidateQueries(['admin-data']); 
-              } catch (e) {
-                toast.error('Failed to delete article');
-              }
-            }
+          onDelete={(postId) => {
+            setConfirmState({ open: true, type: 'post', payload: postId, loading: false });
           }}
         />
       )}
@@ -157,6 +142,36 @@ export default function Dashboard() {
           }}
         />
       )}
+
+      <ConfirmActionModal
+        open={confirmState.open}
+        title={confirmState.type === 'post' ? 'Delete article?' : 'Delete category?'}
+        message={confirmState.type === 'post' ? 'This action will permanently remove the article from the admin panel and public site.' : 'This action will remove the category from the catalog and related items may need attention.'}
+        confirmLabel={confirmState.type === 'post' ? 'Delete article' : 'Delete category'}
+        onCancel={() => setConfirmState({ open: false, type: null, payload: null, loading: false })}
+        onConfirm={async () => {
+          if (!confirmState.payload) return;
+          try {
+            setConfirmState((prev) => ({ ...prev, loading: true }));
+            if (confirmState.type === 'category') {
+              await deleteCategory(confirmState.payload);
+              toast.success('Category removed successfully');
+              triggerCloudflareRebuild();
+            } else if (confirmState.type === 'post') {
+              await deleteDoc(doc(db, 'posts', confirmState.payload));
+              toast.success('Article deleted successfully');
+              triggerCloudflareRebuild();
+              queryClient.invalidateQueries(['admin-data']);
+            }
+            setConfirmState({ open: false, type: null, payload: null, loading: false });
+          } catch (e) {
+            toast.error(confirmState.type === 'post' ? 'Failed to delete article' : 'Failed to remove category');
+            setConfirmState((prev) => ({ ...prev, loading: false }));
+          }
+        }}
+        isLoading={confirmState.loading}
+        destructive
+      />
 
       {/* Category Modal */}
       {showCategoryModal && (

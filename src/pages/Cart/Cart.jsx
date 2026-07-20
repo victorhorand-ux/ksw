@@ -3,6 +3,7 @@ import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import useCartStore from '../../stores/cartStore'
 import useLanguageStore from '../../stores/languageStore'
+import useHydration from '../../hooks/useHydration'
 import { formatRWF } from '../../utils/currency'
 import Button from '../../components/ui/Button' // 🚀 Import Button
 
@@ -16,6 +17,8 @@ export default function Cart() {
   const removeItem = useCartStore((state) => state.removeItem)
   const getTotal = useCartStore((state) => state.getTotal)
   const language = useLanguageStore((state) => state.language)
+  const isHydrated = useHydration()
+  const isEnglish = !isHydrated || language === 'en'
 
   const total = getTotal()
   const freeShippingThreshold = 50000
@@ -24,25 +27,37 @@ export default function Cart() {
   // Empty State
   if (items.length === 0) {
     return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
-        <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mb-6 shadow-inner">
-          <span className="text-4xl opacity-50">🛒</span>
+      <div className="min-h-[70vh] flex items-center justify-center px-4 py-12">
+        <div className="w-full max-w-2xl rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm text-center sm:p-12">
+          <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-sky-50 text-4xl shadow-inner">
+            <span aria-hidden="true">🛒</span>
+          </div>
+          <h2 className="text-2xl font-black text-slate-900 mb-3">
+            {isEnglish ? 'Your cart is empty' : 'Igikapu cyawe ntakintu kirimo'}
+          </h2>
+          <p className="mx-auto max-w-xl text-base text-slate-600 mb-8">
+            {isEnglish
+              ? 'Pick your preferred swim gear, add it to your bag, and continue with confidence when you are ready.'
+              : 'Hitamo ibikoresho byawe byo koga, ubishyire mu gikapu, maze ukomeze igihe wishimiye.'}
+          </p>
+
+          <div className="flex flex-col justify-center gap-3 sm:flex-row">
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={() => navigate('/products')}
+            >
+              {isEnglish ? 'Start Shopping' : 'Tangira Gucuruza'}
+            </Button>
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={() => navigate('/about')}
+            >
+              {isEnglish ? 'Learn About Us' : 'Menya Ibyacu'}
+            </Button>
+          </div>
         </div>
-        <h2 className="text-2xl font-bold mb-2 text-slate-800">
-          {language === 'en' ? 'Your cart is empty' : 'Igikapu cyawe ntakintu kirimo'}
-        </h2>
-        <p className="text-slate-500 mb-8">
-          {language === 'en' ? 'Looks like you haven\'t added any gear yet.' : 'Nta bikoresho urashyiramo.'}
-        </p>
-        
-        {/* 🚀 Refactored to use the reusable Button component */}
-        <Button 
-          variant="primary" 
-          size="lg" 
-          onClick={() => navigate('/products')}
-        >
-          {language === 'en' ? 'Start Shopping' : 'Tangira Gucuruza'}
-        </Button>
       </div>
     )
   }
@@ -51,7 +66,7 @@ export default function Cart() {
     <div className="bg-slate-50 min-h-screen py-8 lg:py-12">
       <div className="container mx-auto px-4 max-w-6xl">
         <h1 className="text-3xl md:text-4xl font-black text-slate-900 mb-8 tracking-tight">
-          {language === 'en' ? 'Your Bag' : 'Igikapu cyawe'} 
+          {isEnglish ? 'Your Bag' : 'Igikapu cyawe'} 
           <span className="text-lg font-medium text-slate-400 ml-3">
             ({items.length} {items.length === 1 ? 'item' : 'items'})
           </span>
@@ -71,8 +86,8 @@ export default function Cart() {
                    <div className="flex justify-between text-sm font-bold">
                      <span className={progress === 100 ? 'text-green-600' : 'text-slate-700'}>
                        {progress === 100 
-                         ? (language === 'en' ? 'Free Shipping Unlocked! 🎉' : 'Tubikugezaho k\'ubuntu! 🎉')
-                         : (language === 'en' ? `Spend ${formatRWF(freeShippingThreshold - total)} for Free Shipping` : `Koresha ${formatRWF(freeShippingThreshold - total)} kugirango ubone transport k'ubuntu`)
+                         ? (isEnglish ? 'Free Shipping Unlocked! 🎉' : 'Tubikugezaho k\'ubuntu! 🎉')
+                         : (isEnglish ? `Spend ${formatRWF(freeShippingThreshold - total)} for Free Shipping` : `Koresha ${formatRWF(freeShippingThreshold - total)} kugirango ubone transport k'ubuntu`)
                        }
                      </span>
                      <span className="text-slate-400 font-medium hidden sm:block">{Math.round(progress)}%</span>

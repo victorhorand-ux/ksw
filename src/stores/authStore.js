@@ -18,8 +18,11 @@ const useAuthStore = create((set, get) => ({
 
   // 1. AUTO-LOGIN LISTENER (Single Source of Truth)
   initializeAuth: () => {
-    // Prevent starting multiple listeners if initializeAuth is called twice
-    if (get().unsubscribeAuth) return;
+    const existingUnsubscribe = get().unsubscribeAuth;
+    if (typeof existingUnsubscribe === 'function') {
+      existingUnsubscribe();
+      set({ unsubscribeAuth: null });
+    }
 
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       set({ isLoading: true, error: null });
@@ -67,9 +70,29 @@ const useAuthStore = create((set, get) => ({
   signIn: async (email, password) => {
     set({ isLoading: true, error: null });
     try {
-      // The onAuthStateChanged listener will automatically detect this success,
-      // fetch Firestore, and populate your Zustand store.
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const currentUser = userCredential.user;
+      const userDocRef = doc(db, 'users', currentUser.uid);
+      const userDocSnap = await getDoc(userDocRef);
+
+      let profileData = {};
+      if (userDocSnap.exists()) {
+        profileData = userDocSnap.data();
+      }
+
+      const mergedUser = {
+        uid: currentUser.uid,
+        email: currentUser.email,
+        ...profileData
+      };
+
+      set({
+        user: mergedUser,
+        isAdmin: mergedUser.role === 'admin',
+        isLoading: false,
+        error: null
+      });
+
       return true; 
     } catch (err) {
       console.error("Sign in error:", err);
@@ -99,8 +122,18 @@ const useAuthStore = create((set, get) => ({
 
       // Create the document in Firestore
       await setDoc(doc(db, "users", currentUser.uid), newUserProfile);
+
+      set({
+        user: {
+          uid: currentUser.uid,
+          email: currentUser.email,
+          ...newUserProfile
+        },
+        isAdmin: false,
+        isLoading: false,
+        error: null
+      });
       
-      // Let onAuthStateChanged handle the rest!
       return true;
     } catch (err) {
       console.error("Registration error:", err);
@@ -117,7 +150,7 @@ const useAuthStore = create((set, get) => ({
   signOut: async () => {
     try {
       await signOut(auth);
-      // Let onAuthStateChanged handle state teardown
+      set({ user: null, isAdmin: false, isLoading: false, error: null });
     } catch (err) {
       console.error("Logout error:", err);
     }

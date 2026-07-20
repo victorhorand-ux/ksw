@@ -6,6 +6,7 @@ import { toast } from 'react-hot-toast'
 
 import useCartStore from '../../stores/cartStore'
 import useLanguageStore from '../../stores/languageStore'
+import useHydration from '../../hooks/useHydration'
 import useAuthStore from '../../stores/authStore'
 import useProductStore from '../../stores/productStore'
 import { useCreateOrder } from '../../hooks/mutations/useCreateOrder'
@@ -25,6 +26,8 @@ export default function Checkout() {
   const navigate = useNavigate()
   const { items, clearCart, getTotal } = useCartStore()
   const language = useLanguageStore((state) => state.language)
+  const isHydrated = useHydration()
+  const isEnglish = !isHydrated || language === 'en'
   const user = useAuthStore((state) => state.user)
   
   const { mutateAsync: createOrder } = useCreateOrder()
@@ -36,6 +39,7 @@ export default function Checkout() {
   const [transactionId, setTransactionId] = useState('')
   const [orderPlaced, setOrderPlaced] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState('')
   const [lastOrder, setLastOrder] = useState(null) 
   
   const [cachedFormData, setCachedFormData] = useState(null)
@@ -55,12 +59,13 @@ export default function Checkout() {
   const onSubmit = (data) => {
     setCachedFormData(data)
     setShowPaymentInstructions(true)
-    toast(language === 'en' ? 'Almost there! Please follow payment steps.' : 'Hasigaye gato!', { icon: '💳' })
+    toast(isEnglish ? 'Almost there! Please follow payment steps.' : 'Hasigaye gato!', { icon: '💳' })
     setTimeout(() => document.getElementById('payment-instructions')?.scrollIntoView({ behavior: 'smooth' }), 100)
   }
 
   const handleOrderPlacement = async (customerData) => {
     setIsSubmitting(true)
+    setSubmitError('')
     const orderPayload = {
       userId: user?.uid || user?.id || 'guest',
       customer: {
@@ -110,15 +115,16 @@ export default function Checkout() {
 
       // 4. Clean up UI
       clearCart()
-      setOrderPlaced(true) 
-      toast.success(language === 'en' ? 'Order Secured!' : 'Itegeko ryohererejwe!')
+      setOrderPlaced(true)
+      toast.success(isEnglish ? 'Order Secured!' : 'Itegeko ryohererejwe!')
 
-      // 5. TRIGGER FOOLPROOF REDIRECT
-      window.location.href = whatsappUrl;
+      // 5. Open WhatsApp in a new tab for the user to continue the conversation
+      window.open(whatsappUrl, '_blank', 'noopener,noreferrer')
 
     } catch (error) {
-      console.error(error);
-      toast.error(language === 'en' ? "Failed to save order." : "Habaye ikibazo.")
+      console.error(error)
+      setSubmitError(isEnglish ? 'We could not place your order right now. Please try again.' : 'Itegeko ryanyu ntirishobora gushyirwaho ubu. Ongera mugerageze.')
+      toast.error(isEnglish ? 'Failed to save order.' : 'Habaye ikibazo.')
     } finally {
       setIsSubmitting(false)
     }
@@ -161,20 +167,27 @@ export default function Checkout() {
                   fullWidth
                   disabled={isSubmitting} 
                 >
-                  {language === 'en' ? 'Continue to Payment' : 'Komeza'}
+                  {isEnglish ? 'Continue to Payment' : 'Komeza'}
                 </Button>
               )}
             </form>
 
             {showPaymentInstructions && (
-              <PaymentInstructions 
-                paymentMethod={paymentMethod}
-                transactionId={transactionId}
-                setTransactionId={setTransactionId}
-                onConfirm={() => handleOrderPlacement(cachedFormData)}
-                isSubmitting={isSubmitting}
-                language={language}
-              />
+              <>
+                {submitError && (
+                  <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-medium text-red-700" role="alert">
+                    {submitError}
+                  </div>
+                )}
+                <PaymentInstructions 
+                  paymentMethod={paymentMethod}
+                  transactionId={transactionId}
+                  setTransactionId={setTransactionId}
+                  onConfirm={() => handleOrderPlacement(cachedFormData)}
+                  isSubmitting={isSubmitting}
+                  language={language}
+                />
+              </>
             )}
           </div>
 

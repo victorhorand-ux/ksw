@@ -8,6 +8,7 @@ import { useCategories } from '../../hooks/queries/useCategories'
 
 import useCartStore from '../../stores/cartStore'
 import useLanguageStore from '../../stores/languageStore'
+import useHydration from '../../hooks/useHydration'
 
 import CategoryScroll from './components/CategoryScroll'
 import ProductToolbar from './components/ProductToolbar'
@@ -24,6 +25,8 @@ export default function Products() {
   
   const addItem = useCartStore((state) => state.addItem)
   const language = useLanguageStore((state) => state.language)
+  const isHydrated = useHydration()
+  const isEnglish = !isHydrated || language === 'en'
 
   const [selectedCategory, setSelectedCategory] = useState(urlCategory || 'all')
   const [priceRange, setPriceRange] = useState([0, 1000000])
@@ -74,7 +77,7 @@ export default function Products() {
       <div className="min-h-[60vh] flex flex-col items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-4 border-slate-200 border-t-sky-500 mb-4"></div>
         <p className="text-slate-500 font-bold tracking-widest uppercase text-xs">
-          {language === 'en' ? 'Loading Catalog...' : 'Birimo Gufunguka...'}
+          {isEnglish ? 'Loading Catalog...' : 'Birimo Gufunguka...'}
         </p>
       </div>
     )
@@ -82,6 +85,18 @@ export default function Products() {
 
   return (
     <div className="container mx-auto px-4 py-6 md:py-8 max-w-7xl">
+      <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">
+            {isEnglish ? 'Shop the collection' : 'Gura ibikoresho'}
+          </h1>
+          <p className="text-sm md:text-base text-slate-600">
+            {isEnglish
+              ? 'Browse premium swim gear by category, price, and style.'
+              : 'Reba ibikoresho byiza byo koga ukurikije icyiciro, ibiciro, n’imiterere.'}
+          </p>
+        </div>
+      </div>
       
       <CategoryScroll 
         categories={categories} 
@@ -110,20 +125,25 @@ export default function Products() {
           ))}
         </div>
       ) : (
-        <div className="min-h-[40vh] flex flex-col items-center justify-center text-center p-8 bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200">
-          <div className="text-4xl md:text-6xl mb-4 opacity-50">🔍</div>
-          <h3 className="text-lg md:text-xl font-bold text-slate-900 mb-2">
-            {language === 'en' ? 'No products found' : 'Nta bicuruzwa byabonetse'}
+        <div className="min-h-[40vh] flex flex-col items-center justify-center text-center p-8 bg-slate-50 rounded-[2rem] border border-dashed border-slate-300">
+          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-white text-4xl shadow-sm">🔍</div>
+          <h3 className="text-lg md:text-xl font-black text-slate-900 mb-2">
+            {isEnglish ? 'No products match that selection' : 'Nta bicuruzwa bihuye n’ivyo'}
           </h3>
+          <p className="max-w-md text-sm md:text-base text-slate-600 mb-6">
+            {isEnglish
+              ? 'Try widening your filters or browse a different category to discover more gear.'
+              : 'Gerageza kongera ibyahiswemo cyangwa ujye mu bindi byiciro byo kubona ibikoresho byinshi.'}
+          </p>
           <button 
             onClick={() => {
               setSearchParams({})
               setSelectedCategory('all')
               setPriceRange([0, 1000000])
             }}
-            className="mt-4 bg-slate-900 text-white px-6 py-3 rounded-full font-bold hover:bg-slate-800 transition"
+            className="bg-slate-900 text-white px-6 py-3 rounded-full font-bold hover:bg-slate-800 transition"
           >
-            {language === 'en' ? 'Clear Filters' : 'Siba Byose'}
+            {isEnglish ? 'Clear Filters' : 'Siba Byose'}
           </button>
         </div>
       )}

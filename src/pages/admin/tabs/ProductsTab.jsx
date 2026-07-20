@@ -1,20 +1,24 @@
 // src/pages/admin/tabs/ProductsTab.jsx
-import React from 'react';
+import React, { useState } from 'react';
 import ProductCard from '../components/ProductCard';
+import ConfirmActionModal from '../components/ConfirmActionModal';
 import useProductStore from '../../../stores/productStore';
 import { toast } from 'react-hot-toast';
 
 export default function ProductsTab({ products, onAdd, onEdit }) {
   const { deleteProduct } = useProductStore();
+  const [confirmState, setConfirmState] = useState({ open: false, productId: null, loading: false });
 
-  const handleDelete = async (productId) => {
-    if(window.confirm('Are you sure you want to delete this product?')) {
-      try {
-        await deleteProduct(productId);
-        toast.success('Product deleted');
-      } catch (e) {
-        toast.error('Failed to delete');
-      }
+  const handleDelete = async () => {
+    if (!confirmState.productId) return;
+    try {
+      setConfirmState((prev) => ({ ...prev, loading: true }));
+      await deleteProduct(confirmState.productId);
+      toast.success('Product deleted successfully');
+      setConfirmState({ open: false, productId: null, loading: false });
+    } catch (e) {
+      toast.error('Failed to delete product');
+      setConfirmState((prev) => ({ ...prev, loading: false }));
     }
   };
 
@@ -47,10 +51,21 @@ export default function ProductsTab({ products, onAdd, onEdit }) {
             key={product.id} 
             product={product} 
             onEdit={onEdit} 
-            onDelete={handleDelete}
+            onDelete={(productId) => setConfirmState({ open: true, productId, loading: false })}
           />
         ))}
       </div>
+
+      <ConfirmActionModal
+        open={confirmState.open}
+        title="Delete product?"
+        message="This will remove the product from the catalog and any related listings."
+        confirmLabel="Delete product"
+        onCancel={() => setConfirmState({ open: false, productId: null, loading: false })}
+        onConfirm={handleDelete}
+        isLoading={confirmState.loading}
+        destructive
+      />
     </div>
   );
 }

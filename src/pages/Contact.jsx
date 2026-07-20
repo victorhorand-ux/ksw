@@ -1,47 +1,79 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore'
+import { db } from '../config/firebase'
 import useLanguageStore from '../stores/languageStore'
+import useHydration from '../hooks/useHydration'
 
 const Contact = () => {
   const language = useLanguageStore((state) => state.language)
+  const isHydrated = useHydration()
+  const isEnglish = !isHydrated || language === 'en'
   const [submitted, setSubmitted] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState('')
   const { register, handleSubmit, formState: { errors }, reset } = useForm()
 
-  const onSubmit = (data) => {
-    // In production, send to backend
-    console.log('Contact form submitted:', data)
-    setSubmitted(true)
-    reset()
-    setTimeout(() => setSubmitted(false), 5000)
+  const onSubmit = async (data) => {
+    setIsSubmitting(true)
+    setSubmitError('')
+    setSubmitted(false)
+
+    try {
+      await addDoc(collection(db, 'contacts'), {
+        ...data,
+        createdAt: serverTimestamp(),
+        source: 'contact-page',
+      })
+
+      setSubmitted(true)
+      reset()
+      setTimeout(() => setSubmitted(false), 5000)
+    } catch (error) {
+      console.error('Contact form submission failed:', error)
+      setSubmitError(
+        isEnglish
+          ? 'We could not send your message right now. Please try again later or contact us directly.'
+          : 'Ubutumwa bwawe ntibushoboye koherezwa ubu. Ongera mugera hanyuma cyangwa twandikire mu buryo butandukanye.'
+      )
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-bold mb-8 text-center">
-          {language === 'en' ? 'Contact Us' : 'Twandikire'}
+          {isEnglish ? 'Contact Us' : 'Twandikire'}
         </h1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Contact Form */}
           <div className="bg-white rounded-lg shadow-md p-8">
             <h2 className="text-2xl font-bold mb-6">
-              {language === 'en' ? 'Send us a Message' : 'Ohereza Ubutumwa'}
+              {isEnglish ? 'Send us a Message' : 'Ohereza Ubutumwa'}
             </h2>
             
             {submitted && (
-              <div className="bg-green-50 border border-green-200 text-green-800 p-4 rounded-lg mb-6">
-                {language === 'en'
+              <div className="bg-green-50 border border-green-200 text-green-800 p-4 rounded-lg mb-6" role="status">
+                {isEnglish
                   ? 'Thank you! We will get back to you soon.'
                   : 'Murakoze! Tuzabagana vuba.'
                 }
               </div>
             )}
 
+            {submitError && (
+              <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg mb-6" role="alert">
+                {submitError}
+              </div>
+            )}
+
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium mb-2">
-                  {language === 'en' ? 'Name' : 'Amazina'} *
+                  {isEnglish ? 'Name' : 'Amazina'} *
                 </label>
                 <input
                   {...register('name', { required: true })}
@@ -49,14 +81,14 @@ const Contact = () => {
                 />
                 {errors.name && (
                   <p className="text-red-600 text-sm mt-1">
-                    {language === 'en' ? 'Required' : 'Bikenewe'}
+                    {isEnglish ? 'Required' : 'Bikenewe'}
                   </p>
                 )}
               </div>
 
               <div>
                 <label className="block text-sm font-medium mb-2">
-                  {language === 'en' ? 'Email' : 'Imeyili'} *
+                  {isEnglish ? 'Email' : 'Imeyili'} *
                 </label>
                 <input
                   {...register('email', { required: true, pattern: /^\S+@\S+$/i })}
@@ -65,14 +97,14 @@ const Contact = () => {
                 />
                 {errors.email && (
                   <p className="text-red-600 text-sm mt-1">
-                    {language === 'en' ? 'Valid email required' : 'Imeyili ikwiye'}
+                    {isEnglish ? 'Valid email required' : 'Imeyili ikwiye'}
                   </p>
                 )}
               </div>
 
               <div>
                 <label className="block text-sm font-medium mb-2">
-                  {language === 'en' ? 'Phone' : 'Telefoni'}
+                  {isEnglish ? 'Phone' : 'Telefoni'}
                 </label>
                 <input
                   {...register('phone')}
@@ -83,7 +115,7 @@ const Contact = () => {
 
               <div>
                 <label className="block text-sm font-medium mb-2">
-                  {language === 'en' ? 'Message' : 'Ubutumwa'} *
+                  {isEnglish ? 'Message' : 'Ubutumwa'} *
                 </label>
                 <textarea
                   {...register('message', { required: true })}
@@ -92,16 +124,19 @@ const Contact = () => {
                 />
                 {errors.message && (
                   <p className="text-red-600 text-sm mt-1">
-                    {language === 'en' ? 'Required' : 'Bikenewe'}
+                    {isEnglish ? 'Required' : 'Bikenewe'}
                   </p>
                 )}
               </div>
 
               <button
                 type="submit"
-                className="w-full bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 rounded-lg transition"
+                disabled={isSubmitting}
+                className="w-full bg-primary-600 hover:bg-primary-700 disabled:opacity-70 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-lg transition"
               >
-                {language === 'en' ? 'Send Message' : 'Ohereza Ubutumwa'}
+                {isSubmitting
+                  ? (isEnglish ? 'Sending...' : 'Iriho...')
+                  : (isEnglish ? 'Send Message' : 'Ohereza Ubutumwa')}
               </button>
             </form>
           </div>
@@ -110,14 +145,14 @@ const Contact = () => {
           <div className="space-y-6">
             <div className="bg-white rounded-lg shadow-md p-8">
               <h2 className="text-2xl font-bold mb-6">
-                {language === 'en' ? 'Get in Touch' : 'Twandikire'}
+                {isEnglish ? 'Get in Touch' : 'Twandikire'}
               </h2>
               <div className="space-y-4">
                 <div>
                   <div className="flex items-center mb-2">
                     <span className="text-2xl mr-3">📍</span>
                     <h3 className="font-semibold">
-                      {language === 'en' ? 'Address' : 'Aderesi'}
+                      {isEnglish ? 'Address' : 'Aderesi'}
                     </h3>
                   </div>
                   <p className="text-gray-600 ml-10">
@@ -129,7 +164,7 @@ const Contact = () => {
                   <div className="flex items-center mb-2">
                     <span className="text-2xl mr-3">📞</span>
                     <h3 className="font-semibold">
-                      {language === 'en' ? 'Phone' : 'Telefoni'}
+                      {isEnglish ? 'Phone' : 'Telefoni'}
                     </h3>
                   </div>
                   <p className="text-gray-600 ml-10">
@@ -141,7 +176,7 @@ const Contact = () => {
                   <div className="flex items-center mb-2">
                     <span className="text-2xl mr-3">📧</span>
                     <h3 className="font-semibold">
-                      {language === 'en' ? 'Email' : 'Imeyili'}
+                      {isEnglish ? 'Email' : 'Imeyili'}
                     </h3>
                   </div>
                   <p className="text-gray-600 ml-10">
@@ -168,17 +203,17 @@ const Contact = () => {
 
             <div className="bg-white rounded-lg shadow-md p-8">
               <h2 className="text-2xl font-bold mb-4">
-                {language === 'en' ? 'Business Hours' : 'Amasaha y\'Ubucuruzi'}
+                {isEnglish ? 'Business Hours' : 'Amasaha y\'Ubucuruzi'}
               </h2>
               <div className="space-y-2 text-gray-700">
                 <p>
-                  <strong>{language === 'en' ? 'Monday - Friday:' : 'Kuwa Mbere - Kuwa Gatanu:'}</strong> 9:00 AM - 6:00 PM
+                  <strong>{isEnglish ? 'Monday - Friday:' : 'Kuwa Mbere - Kuwa Gatanu:'}</strong> 9:00 AM - 6:00 PM
                 </p>
                 <p>
-                  <strong>{language === 'en' ? 'Saturday:' : 'Kuwa Gatandatu:'}</strong> 9:00 AM - 4:00 PM
+                  <strong>{isEnglish ? 'Saturday:' : 'Kuwa Gatandatu:'}</strong> 9:00 AM - 4:00 PM
                 </p>
                 <p>
-                  <strong>{language === 'en' ? 'Sunday:' : 'Ku cyumweru:'}</strong> Closed
+                  <strong>{isEnglish ? 'Sunday:' : 'Ku cyumweru:'}</strong> Closed
                 </p>
               </div>
             </div>
