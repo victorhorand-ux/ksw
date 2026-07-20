@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { collection, addDoc } from 'firebase/firestore';
-import { db } from '../../config/firebase';
+import { db } from '../../config/firebaseFirestore';
 import useLanguageStore from '../../stores/languageStore';
 import useHydration from '../../hooks/useHydration'; // 🚀 1. Import the hook
 

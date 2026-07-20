@@ -4,6 +4,7 @@ import DOMPurify from 'dompurify' // 🚀 1. Security: Import the sanitizer
 import useBlogStore from '../stores/blogStore'
 import LazyImage from '../components/LazyImage'
 import SEO from '../components/SEO' // 🚀 2. SEO: Import the meta tag injector
+import { ArticleSkeleton } from '../components/SkeletonLoader'
 
 const BlogPost = () => {
   const { slug } = useParams()
@@ -23,7 +24,7 @@ const BlogPost = () => {
     loadPost()
   }, [slug, fetchPostBySlug])
 
-  if (isLoading) return <div className="text-center py-20">Loading Article...</div>
+  if (isLoading) return <ArticleSkeleton />
   if (!post) return <div className="text-center py-20 text-xl font-bold">Article not found.</div>
 
   // 🚀 4. Sanitize the HTML to prevent XSS attacks!

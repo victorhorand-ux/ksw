@@ -1,7 +1,7 @@
 // src/hooks/mutations/useCreateOrder.js
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { collection, addDoc } from 'firebase/firestore'
-import { db } from '../../config/firebase'
+import { db } from '../../config/firebaseFirestore'
 
 export function useCreateOrder() {
   const queryClient = useQueryClient()

@@ -53,6 +53,8 @@ export default function HeroSection({ language }) {
                 src="https://images.unsplash.com/photo-1530549387789-4c1017266635?q=80&w=2070&auto=format&fit=crop" 
                 alt="Swimmer in action"
                 className="w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-700"
+                width={1200}
+                height={1400}
               />
             </div>
           </div>

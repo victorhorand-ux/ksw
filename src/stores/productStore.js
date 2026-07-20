@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { db } from '../config/firebase'
+import { db } from '../config/firebaseFirestore'
 import { collection, getDocs, addDoc, doc, updateDoc, deleteDoc, query, where, limit, increment } from 'firebase/firestore'
 import { toast } from 'react-hot-toast' // 🚀 Upgraded to Premium UI
 import { products as mockProducts } from '../data/products' 

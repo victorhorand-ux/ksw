@@ -39,10 +39,10 @@ export default function ProductToolbar({
           </button>
 
           {showPriceFilter && (
-            <div className="absolute right-0 top-full mt-2 w-72 bg-white rounded-2xl shadow-2xl border border-slate-100 p-6 z-30 animate-fade-in-up">
-              <div className="flex justify-between items-center mb-4">
-                <span className="font-bold text-slate-900 text-sm">{language === 'en' ? 'Max Price' : 'Igiciro Ntarengwa'}</span>
-                <span className="text-sky-600 font-black">{formatRWF(priceRange[1])}</span>
+            <div className="fixed inset-x-4 bottom-4 z-[60] w-auto rounded-[1.5rem] border border-slate-200 bg-white p-5 shadow-2xl sm:absolute sm:inset-auto sm:right-0 sm:top-full sm:mt-2 sm:w-72 sm:rounded-2xl sm:border-slate-100 sm:p-6">
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <span className="text-sm font-bold text-slate-900">{language === 'en' ? 'Max Price' : 'Igiciro Ntarengwa'}</span>
+                <span className="font-black text-sky-600">{formatRWF(priceRange[1])}</span>
               </div>
               <input
                 type="range"
@@ -51,7 +51,7 @@ export default function ProductToolbar({
                 step="1000"
                 value={priceRange[1]}
                 onChange={(e) => setPriceRange([0, parseInt(e.target.value)])}
-                className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-sky-600"
+                className="h-1.5 w-full cursor-pointer appearance-none rounded-lg bg-slate-100 accent-sky-600"
               />
             </div>
           )}

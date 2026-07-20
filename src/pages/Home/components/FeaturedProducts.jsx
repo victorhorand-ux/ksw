@@ -69,6 +69,8 @@ export default function FeaturedProducts({ language, featuredProducts }) {
                       src={product.image}
                       alt={language === 'en' ? product.name : product.nameRw}
                       className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110"
+                      width={400}
+                      height={500}
                       fallback={<div className="absolute inset-0 flex items-center justify-center bg-slate-50 text-slate-300"><span className="text-4xl md:text-6xl">🏊</span></div>}
                     />
                   </div>

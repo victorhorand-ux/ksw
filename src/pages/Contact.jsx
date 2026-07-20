@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore'
-import { db } from '../config/firebase'
+import { db } from '../config/firebaseFirestore'
 import useLanguageStore from '../stores/languageStore'
 import useHydration from '../hooks/useHydration'
 

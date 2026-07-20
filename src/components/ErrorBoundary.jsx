@@ -36,16 +36,16 @@ class ErrorBoundary extends React.Component {
       }
       
       return (
-        <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
-          <div className="max-w-lg w-full bg-white rounded-[2rem] shadow-2xl p-8 md:p-12 text-center border border-slate-100">
-            <div className="text-6xl mb-6">⚠️</div>
-            <h1 className="text-2xl md:text-3xl font-black text-slate-900 mb-4 tracking-tight">
+        <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4 py-10">
+          <div className="max-w-lg w-full rounded-[2rem] border border-slate-200 bg-white p-8 text-center shadow-2xl md:p-12">
+            <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-rose-50 text-4xl">⚠️</div>
+            <h1 className="mb-4 text-2xl font-black tracking-tight text-slate-900 md:text-3xl">
               {language === 'en' ? 'Something went wrong' : 'Habaye ikibazo'}
             </h1>
-            <p className="text-slate-500 font-medium mb-8">
+            <p className="mb-8 text-slate-500 font-medium">
               {language === 'en' 
-                ? 'We apologize for the inconvenience. An error occurred while loading this page.'
-                : 'Twiseguye, habaye ikosa mu gufungura iyi paji.'
+                ? 'We apologize for the inconvenience. An unexpected issue interrupted this page, but you can recover quickly.'
+                : 'Twiseguye, habaye ikosa ritunganye ryahagaritse iyi paji, ariko urashobora kuyisubiramo byoroshye.'
               }
             </p>
             
@@ -65,14 +65,14 @@ class ErrorBoundary extends React.Component {
               {/* 🚀 Changed to a hard reload for better recovery from fatal crashes */}
               <button
                 onClick={() => window.location.reload()}
-                className="bg-sky-600 hover:bg-sky-700 text-white font-black px-6 py-4 rounded-xl transition-all shadow-lg shadow-sky-200 active:scale-95 w-full sm:w-auto"
+                className="w-full rounded-2xl bg-sky-600 px-6 py-4 font-black text-white shadow-lg shadow-sky-200 transition-all hover:bg-sky-700 active:scale-[0.98] sm:w-auto"
               >
                 {language === 'en' ? 'Refresh Page' : 'Ongera Ugerageze'}
               </button>
               <Link
                 to="/"
                 onClick={this.handleReset}
-                className="bg-slate-100 hover:bg-slate-200 text-slate-700 font-black px-6 py-4 rounded-xl transition-all active:scale-95 w-full sm:w-auto"
+                className="w-full rounded-2xl border border-slate-200 bg-slate-100 px-6 py-4 font-black text-slate-700 transition-all hover:bg-slate-200 active:scale-[0.98] sm:w-auto"
               >
                 {language === 'en' ? 'Go Home' : 'Subira Ahabanza'}
               </Link>

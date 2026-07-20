@@ -1,7 +1,7 @@
 // src/hooks/mutations/useUpdateOrderStatus.js
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { doc, updateDoc } from 'firebase/firestore'
-import { db } from '../../config/firebase'
+import { db } from '../../config/firebaseFirestore'
 
 export function useUpdateOrderStatus() {
   const queryClient = useQueryClient()

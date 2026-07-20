@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { collection, query, where, getDocs } from 'firebase/firestore'
-import { db } from '../../config/firebase'
+import { db } from '../../config/firebaseFirestore'
 
 export function useProduct(slug) {
   return useQuery({

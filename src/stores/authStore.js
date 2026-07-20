@@ -1,5 +1,6 @@
 import { create } from 'zustand'
-import { auth, db } from '../config/firebase' 
+import { auth } from '../config/firebase' 
+import { db } from '../config/firebaseFirestore' 
 import { 
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword, 

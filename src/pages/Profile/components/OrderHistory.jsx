@@ -1,6 +1,7 @@
 // src/pages/Profile/components/OrderHistory.jsx
 import React from 'react'
 import { formatRWF } from '../../../utils/currency'
+import { ListSkeleton } from '../../../components/SkeletonLoader'
 
 export default function OrderHistory({ orders, isLoading, onShop, language }) {
   const getStatusColor = (status) => {
@@ -14,7 +15,7 @@ export default function OrderHistory({ orders, isLoading, onShop, language }) {
     return colors[status] || 'bg-slate-100 text-slate-600 border-slate-200'
   }
 
-  if (isLoading) return <div className="bg-white p-12 text-center rounded-3xl">Loading orders...</div>
+  if (isLoading) return <ListSkeleton count={4} />
 
   if (orders.length === 0) return (
     <div className="bg-white rounded-3xl border-2 border-dashed border-slate-200 p-12 text-center">

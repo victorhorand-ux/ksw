@@ -14,6 +14,19 @@ import CategoryScroll from './components/CategoryScroll'
 import ProductToolbar from './components/ProductToolbar'
 import ProductCard from './components/ProductCard'
 
+function ProductCardSkeleton() {
+  return (
+    <div className="animate-pulse rounded-[1.5rem] border border-slate-200 bg-white p-3 shadow-sm">
+      <div className="mb-3 aspect-[4/5] rounded-[1rem] bg-slate-200" />
+      <div className="space-y-2">
+        <div className="h-4 w-3/4 rounded bg-slate-200" />
+        <div className="h-4 w-1/2 rounded bg-slate-200" />
+        <div className="h-5 w-1/3 rounded bg-slate-200" />
+      </div>
+    </div>
+  )
+}
+
 export default function Products() {
   const [searchParams, setSearchParams] = useSearchParams()
   const urlSearchQuery = searchParams.get('search') || ''
@@ -74,11 +87,21 @@ export default function Products() {
   // 🚀 3. Add a graceful loading UI while React Query fetches the initial data
   if (isProductsLoading || isCategoriesLoading) {
     return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-slate-200 border-t-sky-500 mb-4"></div>
-        <p className="text-slate-500 font-bold tracking-widest uppercase text-xs">
-          {isEnglish ? 'Loading Catalog...' : 'Birimo Gufunguka...'}
-        </p>
+      <div className="container mx-auto max-w-7xl px-4 py-6 md:py-8">
+        <div className="mb-4 space-y-2">
+          <div className="h-8 w-48 animate-pulse rounded-full bg-slate-200" />
+          <div className="h-4 w-72 animate-pulse rounded-full bg-slate-200" />
+        </div>
+        <div className="mb-6 grid grid-cols-4 gap-2 md:gap-3">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <div key={index} className="h-10 animate-pulse rounded-full bg-slate-200" />
+          ))}
+        </div>
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-6 xl:grid-cols-4">
+          {Array.from({ length: 8 }).map((_, index) => (
+            <ProductCardSkeleton key={index} />
+          ))}
+        </div>
       </div>
     )
   }

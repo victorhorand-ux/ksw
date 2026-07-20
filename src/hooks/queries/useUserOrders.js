@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { collection, query, where, getDocs, orderBy } from 'firebase/firestore'
-import { db } from '../../config/firebase'
+import { db } from '../../config/firebaseFirestore'
 
 export function useUserOrders(userId) {
   return useQuery({

@@ -18,6 +18,7 @@ import SizeGuideModal from './components/SizeGuideModal';
 
 // 🚀 1. IMPORT THE NEW SEO COMPONENT
 import SEO from '../../components/SEO';
+import { ProductDetailSkeleton } from '../../components/SkeletonLoader';
 
 export default function ProductDetail() {
   const { slug } = useParams();
@@ -62,11 +63,7 @@ export default function ProductDetail() {
 
   // Graceful Loading UI
   if (isLoading) {
-    return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-slate-200 border-t-sky-500 mb-4"></div>
-      </div>
-    );
+    return <ProductDetailSkeleton />;
   }
 
   // Graceful Error UI

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
 import { doc, setDoc } from 'firebase/firestore'
-import { db } from '../../config/firebase'
+import { db } from '../../config/firebaseFirestore'
 
 import useAuthStore from '../../stores/authStore'
 import useLanguageStore from '../../stores/languageStore'

@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { db } from '../config/firebase'
+import { db } from '../config/firebaseFirestore'
 import { collection, getDocs, addDoc, doc, updateDoc, deleteDoc, writeBatch } from 'firebase/firestore'
 
 // Default categories to seed if empty

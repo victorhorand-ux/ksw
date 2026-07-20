@@ -12,7 +12,7 @@ export default function Button({
   type = 'button',
   ...props
 }) {
-  const baseStyles = 'inline-flex items-center justify-center font-bold rounded-2xl transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none';
+  const baseStyles = 'inline-flex items-center justify-center font-bold rounded-2xl transition-all duration-200 ease-out active:scale-[0.98] disabled:opacity-60 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-sky-500/20';
   
   const variants = {
     // 🚀 Restored the premium blue gradient with a matching colored shadow
@@ -22,7 +22,7 @@ export default function Button({
     secondary: 'bg-sky-50 text-sky-700 hover:bg-sky-100 border border-sky-200',
     
     // 🚀 Updated hover state to match the blue theme instead of gray
-    outline: 'border-2 border-slate-200 text-slate-700 hover:border-sky-500 hover:text-sky-700 hover:bg-sky-50 bg-white',
+    outline: 'border border-slate-200 text-slate-700 hover:border-sky-500 hover:text-sky-700 hover:bg-sky-50 bg-white',
     
     danger: 'bg-rose-500 text-white hover:bg-rose-600 shadow-md hover:shadow-lg',
   };

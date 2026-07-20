@@ -1,7 +1,7 @@
 // src/hooks/queries/useCategories.js
 import { useQuery } from '@tanstack/react-query'
 import { collection, getDocs } from 'firebase/firestore'
-import { db } from '../../config/firebase'
+import { db } from '../../config/firebaseFirestore'
 
 export function useCategories() {
   return useQuery({

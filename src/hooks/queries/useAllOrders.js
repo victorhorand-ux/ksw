@@ -1,7 +1,7 @@
 // src/hooks/queries/useAllOrders.js
 import { useQuery } from '@tanstack/react-query'
 import { collection, getDocs, query, orderBy } from 'firebase/firestore'
-import { db } from '../../config/firebase'
+import { db } from '../../config/firebaseFirestore'
 
 export function useAllOrders() {
   return useQuery({

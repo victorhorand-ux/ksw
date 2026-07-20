@@ -18,6 +18,8 @@ export default function ProductCard({ product, language, addItem }) {
             src={product.image}
             alt={language === 'en' ? product.name : product.nameRw}
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+            width={400}
+            height={500}
             fallback={<div className="w-full h-full flex items-center justify-center text-4xl">🏊</div>}
           />
         </Link>

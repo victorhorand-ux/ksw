@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { db } from '../config/firebase'; // Adjust path if needed
+import { db } from '../config/firebaseFirestore';
 import { collection, addDoc } from 'firebase/firestore';
 import toast from 'react-hot-toast';
 

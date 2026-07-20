@@ -19,7 +19,7 @@ import { useUpdateOrderStatus } from '../../hooks/mutations/useUpdateOrderStatus
 import { toast } from 'react-hot-toast';
 import { triggerCloudflareRebuild } from '../../utils/rebuildService'; 
 import { doc, deleteDoc, updateDoc } from 'firebase/firestore'; 
-import { db } from '../../config/firebase';
+import { db } from '../../config/firebaseFirestore';
 import { useQueryClient } from '@tanstack/react-query'; 
 
 export default function Dashboard() {

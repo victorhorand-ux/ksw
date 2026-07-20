@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { db } from '../config/firebase'
+import { db } from '../config/firebaseFirestore'
 import { collection, getDocs, query, orderBy, where, limit } from 'firebase/firestore'
 
 const useBlogStore = create((set, get) => ({

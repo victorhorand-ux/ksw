@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { collection, addDoc } from 'firebase/firestore';
-import { db } from '../../config/firebase';
+import { db } from '../../config/firebaseFirestore';
 import { uploadToCloudinary } from '../../utils/uploadService';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; // 🚀 Essential for Quill styling
