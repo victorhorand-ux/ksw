@@ -26,3 +26,32 @@
   }
 }
 
+/* Infinite Marquee Animation for Trust Badges */
+@keyframes scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+
+.animate-scroll {
+  animation: scroll 40s linear infinite;
+}
+
+/* Infinite Marquee Animations */
+@keyframes scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); } 
+}
+
+@keyframes scroll-reverse {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+
+.animate-scroll {
+  animation: scroll 40s linear infinite;
+}
+
+.animate-scroll-reverse {
+  /* 🚀 New animation for the testimonials */
+  animation: scroll-reverse 45s linear infinite;
+}

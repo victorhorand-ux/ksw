@@ -1,34 +1,50 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import DOMPurify from 'dompurify' // 🚀 1. Security: Import the sanitizer
 import useBlogStore from '../stores/blogStore'
 import LazyImage from '../components/LazyImage'
+import SEO from '../components/SEO' // 🚀 2. SEO: Import the meta tag injector
+import { ArticleSkeleton } from '../components/SkeletonLoader'
 
 const BlogPost = () => {
   const { slug } = useParams()
-  const { posts, fetchPosts } = useBlogStore()
+  // 🚀 3. Fetching: Grab the specific function we built in the store
+  const { fetchPostBySlug } = useBlogStore() 
   const [post, setPost] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    if (posts.length === 0) fetchPosts()
-  }, [posts.length, fetchPosts])
-
-  useEffect(() => {
-    const foundPost = posts.find(p => p.slug === slug)
-    if (foundPost) {
-      setPost(foundPost)
-      document.title = `${foundPost.title} | Kigali Swim Shop`
+    const loadPost = async () => {
+      setIsLoading(true)
+      const data = await fetchPostBySlug(slug)
+      setPost(data)
+      setIsLoading(false)
       window.scrollTo(0, 0)
     }
-  }, [slug, posts])
+    loadPost()
+  }, [slug, fetchPostBySlug])
 
-  if (!post) return <div className="text-center py-20">Loading...</div>
+  if (isLoading) return <ArticleSkeleton />
+  if (!post) return <div className="text-center py-20 text-xl font-bold">Article not found.</div>
+
+  // 🚀 4. Sanitize the HTML to prevent XSS attacks!
+  const cleanHTML = DOMPurify.sanitize(post.content)
 
   return (
-    <main className="bg-white pb-24">
+    <main className="bg-white pb-24 animate-fade-in">
+      
+      {/* 🚀 Inject Blog SEO Metadata */}
+      <SEO 
+        title={post.title}
+        description={post.excerpt || `Read ${post.title} on Kigali Swim Shop.`}
+        image={post.image}
+        url={`https://kigaliswimshop.online/blog/${slug}`}
+      />
+
       {/* Article Header */}
       <header className="relative w-full h-[40vh] md:h-[60vh] bg-slate-900">
-        <LazyImage src={post.image} alt={post.title} className="absolute inset-0 w-full h-full object-cover  " />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90  to-transparent" />
+        <LazyImage src={post.image} alt={post.title} className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-6 md:p-12 container mx-auto max-w-4xl z-10">
           <span className="text-sky-400 font-black tracking-widest text-xs uppercase mb-4 block">
             {post.category}
@@ -37,7 +53,7 @@ const BlogPost = () => {
             {post.title}
           </h1>
           <div className="flex items-center gap-4 text-slate-300 font-medium text-sm">
-            <span>By {post.author || 'Kigali Swim Shop'}</span>
+            <span>By {post.author || 'KigaliSwimShop'}</span>
             <span>•</span>
             <time>{new Date(post.publishedAt).toLocaleDateString()}</time>
           </div>
@@ -46,13 +62,14 @@ const BlogPost = () => {
 
       {/* Article Content */}
       <article className="container mx-auto px-4 py-12 max-w-3xl">
-        {/* Render HTML content securely */}
+        
+        {/* Render the sanitized HTML securely */}
         <div 
           className="prose prose-lg prose-slate max-w-none prose-headings:font-black prose-a:text-sky-600 prose-img:rounded-3xl"
-          dangerouslySetInnerHTML={{ __html: post.content }}
+          dangerouslySetInnerHTML={{ __html: cleanHTML }}
         />
 
-        {/* 🚀 THE SEO CONVERSION MACHINE: Inject related products */}
+        {/* The SEO Conversion Machine: Inject related products */}
         <div className="mt-16 p-8 bg-sky-50 rounded-3xl border border-sky-100 flex flex-col md:flex-row items-center gap-6 shadow-sm">
           <div className="flex-1 text-center md:text-left">
             <h3 className="text-2xl font-black text-slate-900 mb-2">Ready to hit the pool?</h3>

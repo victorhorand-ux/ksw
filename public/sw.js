@@ -1,4 +1,4 @@
-// Service Worker for Kigali Swim Shop
+// Service Worker for KigaliSwimShop
 const CACHE_NAME = 'kigali-swim-shop-v1'
 const urlsToCache = [
   '/',
@@ -19,12 +19,25 @@ self.addEventListener('install', (event) => {
 
 // Fetch event
 self.addEventListener('fetch', (event) => {
+  const { request } = event
+
+  const shouldSkipCaching = request.url.includes('firestore.googleapis.com') ||
+    request.url.includes('firebaseio.com') ||
+    request.url.includes('googleapis.com') ||
+    request.method !== 'GET' ||
+    request.mode === 'navigate'
+
+  if (shouldSkipCaching) {
+    event.respondWith(fetch(request))
+    return
+  }
+
   event.respondWith(
-    caches.match(event.request)
+    caches.match(request)
       .then((response) => {
-        // Return cached version or fetch from network
-        return response || fetch(event.request)
+        return response || fetch(request)
       })
+      .catch(() => fetch(request))
   )
 })
 

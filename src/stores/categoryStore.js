@@ -1,13 +1,13 @@
 import { create } from 'zustand'
-import { db } from '../config/firebase'
-import { collection, getDocs, addDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore'
+import { db } from '../config/firebaseFirestore'
+import { collection, getDocs, addDoc, doc, updateDoc, deleteDoc, writeBatch } from 'firebase/firestore'
 
 // Default categories to seed if empty
 const defaultCategories = [
-  { id: 'caps', name: 'Swimming Caps', nameRw: 'Ingofero zo koga', icon: '🧢' },
-  { id: 'goggles', name: 'Goggles', nameRw: 'Amadarubindi', icon: '🥽' },
-  { id: 'suits', name: 'Swimsuits', nameRw: 'Imyenda yo koga', icon: '🩱' },
-  { id: 'equipment', name: 'Training Gear', nameRw: 'Ibikoresho', icon: '🏊‍♂️' },
+  { name: 'Swimming Caps', nameRw: 'Ingofero zo koga', icon: '🧢' },
+  { name: 'Goggles', nameRw: 'Amadarubindi', icon: '🥽' },
+  { name: 'Swimsuits', nameRw: 'Imyenda yo koga', icon: '🩱' },
+  { name: 'Training Gear', nameRw: 'Ibikoresho', icon: '🏊‍♂️' },
 ]
 
 const useCategoryStore = create((set, get) => ({
@@ -15,9 +15,12 @@ const useCategoryStore = create((set, get) => ({
   isLoading: false,
   error: null,
 
-  // 1. FETCH FROM FIREBASE
-  fetchCategories: async () => {
-    set({ isLoading: true });
+  // 1. FETCH FROM FIREBASE (Optimized)
+  fetchCategories: async (forceRefresh = false) => {
+    // 🚀 Performance: Don't fetch if we already have them, unless forced!
+    if (!forceRefresh && get().categories.length > 0) return;
+
+    set({ isLoading: true, error: null });
     try {
       const querySnapshot = await getDocs(collection(db, "categories"));
       const categoryData = querySnapshot.docs.map(doc => ({
@@ -25,37 +28,30 @@ const useCategoryStore = create((set, get) => ({
         ...doc.data()
       }));
 
-      // If DB is empty, use defaults (optional, but helps avoid blank screens)
-      if (categoryData.length === 0) {
-        set({ categories: defaultCategories, isLoading: false }); 
-        // Note: You might want a "seed" button for this later
-      } else {
-        set({ categories: categoryData, isLoading: false });
-      }
+      // State perfectly mirrors the database
+      set({ categories: categoryData, isLoading: false });
     } catch (error) {
       console.error("Error fetching categories:", error);
       set({ error: error.message, isLoading: false });
     }
   },
 
-  // 2. ADD CATEGORY (Cloud Save)
+  // 2. ADD CATEGORY 
   addCategory: async (newCategory) => {
     set({ isLoading: true });
     try {
-      // Add to Firestore
       const docRef = await addDoc(collection(db, "categories"), newCategory);
       
-      // Update Local State
       const categoryWithId = { ...newCategory, id: docRef.id };
       set(state => ({ 
-        categories: [...state.categories, categoryWithId],
-        isLoading: false 
+        categories: [...state.categories, categoryWithId]
       }));
+      return categoryWithId;
     } catch (error) {
       console.error("Error adding category:", error);
-      throw error; // Let the UI handle the alert
+      throw error; 
     } finally {
-        set({ isLoading: false });
+      set({ isLoading: false });
     }
   },
 
@@ -84,6 +80,30 @@ const useCategoryStore = create((set, get) => ({
     } catch (error) {
       console.error("Error deleting category:", error);
       throw error;
+    }
+  },
+
+  // 🚀 NEW: SAFE SEED FUNCTION (For Admin Use Only)
+  // This uses a Firestore Batch to write all defaults to the DB simultaneously.
+  seedDefaultCategories: async () => {
+    set({ isLoading: true });
+    try {
+      const batch = writeBatch(db);
+      
+      defaultCategories.forEach((cat) => {
+        const newCatRef = doc(collection(db, "categories"));
+        batch.set(newCatRef, cat);
+      });
+
+      await batch.commit();
+      
+      // Force a fresh fetch so the UI gets the newly generated Firebase IDs
+      await get().fetchCategories(true); 
+    } catch (error) {
+      console.error("Error seeding categories:", error);
+      throw error;
+    } finally {
+      set({ isLoading: false });
     }
   }
 }))

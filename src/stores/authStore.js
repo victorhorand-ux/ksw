@@ -1,64 +1,81 @@
 import { create } from 'zustand'
-import { auth, db } from '../config/firebase' 
+import { auth } from '../config/firebase' 
+import { db } from '../config/firebaseFirestore' 
 import { 
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword, 
   signOut, 
   onAuthStateChanged,
-  sendPasswordResetEmail // 🚀 ADDED: The Firebase reset function
+  sendPasswordResetEmail
 } from 'firebase/auth'
 import { doc, setDoc, getDoc } from 'firebase/firestore'
 
-const useAuthStore = create((set) => ({
+const useAuthStore = create((set, get) => ({
   user: null,
   isAdmin: false,
   isLoading: true, 
   error: null,
+  unsubscribeAuth: null, // 🚀 Keep track of the listener to prevent duplicates
 
-  // 1. AUTO-LOGIN LISTENER (Runs when app starts)
+  // 1. AUTO-LOGIN LISTENER (Single Source of Truth)
   initializeAuth: () => {
+    const existingUnsubscribe = get().unsubscribeAuth;
+    if (typeof existingUnsubscribe === 'function') {
+      existingUnsubscribe();
+      set({ unsubscribeAuth: null });
+    }
+
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      set({ isLoading: true });
+      set({ isLoading: true, error: null });
       
       if (currentUser) {
-        // Fetch the user's extra profile data (name, phone, role) from Firestore
-        const userDocRef = doc(db, 'users', currentUser.uid);
-        const userDocSnap = await getDoc(userDocRef);
-        
-        let profileData = {};
-        if (userDocSnap.exists()) {
-          profileData = userDocSnap.data();
-        }
+        try {
+          // Fetch user profile from Firestore
+          const userDocRef = doc(db, 'users', currentUser.uid);
+          const userDocSnap = await getDoc(userDocRef);
+          
+          let profileData = {};
+          if (userDocSnap.exists()) {
+            profileData = userDocSnap.data();
+          }
 
-        // Merge Auth data with Firestore Database data
-        const mergedUser = {
-          uid: currentUser.uid,
-          email: currentUser.email,
-          ...profileData
-        };
-        
-        // 🔓 Check the role from the database! (Or fallback to the hardcoded email just in case)
-        const isAdmin = mergedUser.role === 'admin' || currentUser.email === 'admin@kigaliswim.com';
-        
-        set({ user: mergedUser, isAdmin, isLoading: false });
+          const mergedUser = {
+            uid: currentUser.uid,
+            email: currentUser.email,
+            ...profileData
+          };
+          
+          // Role validation is database-driven
+          const isAdmin = mergedUser.role === 'admin';
+          
+          set({ user: mergedUser, isAdmin, isLoading: false });
+        } catch (err) {
+          console.error("Error fetching user profile from Firestore:", err);
+          // Safe fallback: Logged in, but without custom profile data
+          set({ 
+            user: { uid: currentUser.uid, email: currentUser.email }, 
+            isAdmin: false, 
+            isLoading: false 
+          });
+        }
       } else {
         set({ user: null, isAdmin: false, isLoading: false });
       }
     });
+
+    set({ unsubscribeAuth: unsubscribe });
     return unsubscribe; 
   },
 
-  // 2. LOGIN FUNCTION
+  // 2. SIGN IN FUNCTION (Clean & Lightweight)
   signIn: async (email, password) => {
     set({ isLoading: true, error: null });
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const currentUser = userCredential.user;
-
-      // Fetch the role and details from Firestore upon explicit login
       const userDocRef = doc(db, 'users', currentUser.uid);
       const userDocSnap = await getDoc(userDocRef);
-      
+
       let profileData = {};
       if (userDocSnap.exists()) {
         profileData = userDocSnap.data();
@@ -70,12 +87,16 @@ const useAuthStore = create((set) => ({
         ...profileData
       };
 
-      const isAdmin = mergedUser.role === 'admin' || currentUser.email === 'admin@kigaliswim.com';
+      set({
+        user: mergedUser,
+        isAdmin: mergedUser.role === 'admin',
+        isLoading: false,
+        error: null
+      });
 
-      set({ user: mergedUser, isAdmin, isLoading: false });
       return true; 
     } catch (err) {
-      console.error(err);
+      console.error("Sign in error:", err);
       let errorMessage = "Failed to login.";
       if (err.code === 'auth/invalid-credential') errorMessage = "Wrong email or password.";
       if (err.code === 'auth/too-many-requests') errorMessage = "Too many failed attempts. Try later.";
@@ -85,7 +106,7 @@ const useAuthStore = create((set) => ({
     }
   },
 
-  // 3. REGISTER FUNCTION
+  // 3. REGISTER FUNCTION (Keeps explicit customer payload assignment)
   signUp: async (userData) => {
     set({ isLoading: true, error: null });
     try {
@@ -97,20 +118,26 @@ const useAuthStore = create((set) => ({
         email: userData.email,
         phone: userData.phone,
         createdAt: new Date().toISOString(),
-        role: 'customer' // Defaults to customer
+        role: 'customer' // Secure: Hardcoded to prevent role spoofing
       };
 
+      // Create the document in Firestore
       await setDoc(doc(db, "users", currentUser.uid), newUserProfile);
 
-      const mergedUser = {
-        uid: currentUser.uid,
-        ...newUserProfile
-      };
-
-      set({ user: mergedUser, isAdmin: false, isLoading: false });
-      return mergedUser;
+      set({
+        user: {
+          uid: currentUser.uid,
+          email: currentUser.email,
+          ...newUserProfile
+        },
+        isAdmin: false,
+        isLoading: false,
+        error: null
+      });
+      
+      return true;
     } catch (err) {
-      console.error(err);
+      console.error("Registration error:", err);
       let errorMessage = "Failed to register.";
       if (err.code === 'auth/email-already-in-use') errorMessage = "This email is already registered.";
       if (err.code === 'auth/weak-password') errorMessage = "Password should be at least 6 characters.";
@@ -124,13 +151,13 @@ const useAuthStore = create((set) => ({
   signOut: async () => {
     try {
       await signOut(auth);
-      set({ user: null, isAdmin: false });
+      set({ user: null, isAdmin: false, isLoading: false, error: null });
     } catch (err) {
-      console.error(err);
+      console.error("Logout error:", err);
     }
   },
 
-  // 🚀 5. NEW: FORGOT PASSWORD FUNCTION
+  // 5. FORGOT PASSWORD FUNCTION
   resetPassword: async (email) => {
     set({ isLoading: true, error: null });
     try {
@@ -149,4 +176,4 @@ const useAuthStore = create((set) => ({
   }
 }))
 
-export default useAuthStore
+export default useAuthStore;

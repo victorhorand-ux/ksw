@@ -1,6 +1,6 @@
 {
-  "name": "Kigali Swim Shop",
-  "short_name": "Swim Shop",
+  "name": "KigaliSwimShop",
+  "short_name": "SwimShop",
   "description": "Your trusted swimming equipment store in Kigali, Rwanda",
   "start_url": "/",
   "display": "standalone",

@@ -6,11 +6,31 @@
   "scripts": {
     "dev": "vite",
     "sitemap": "node generate-sitemap.js",
-    "build": "npm run sitemap && vite build",
+    "build": "npm run sitemap && vite build && npx react-snap",
     "preview": "vite preview"
   },
+  "reactSnap": {
+    "source": "dist",
+    "include": [
+      "/",
+      "/products",
+      "/about",
+      "/contact",
+      "/faq",
+      "/terms",
+      "/privacy-policy"
+    ],
+    "skipThirdPartyRequests": true, 
+    "puppeteerArgs": [
+      "--no-sandbox",
+      "--disable-setuid-sandbox"
+    ]
+  },
   "dependencies": {
+    "@tanstack/react-query": "^5.101.2",
+    "@tanstack/react-query-devtools": "^5.101.2",
     "crypto-js": "^4.2.0",
+    "dompurify": "^3.4.12",
     "dotenv": "^17.3.1",
     "firebase": "^11.3.1",
     "idb": "^8.0.3",
@@ -20,13 +40,16 @@
     "react-hook-form": "^7.66.1",
     "react-hot-toast": "^2.6.0",
     "react-icons": "^5.5.0",
+    "react-quill": "^2.0.0",
     "react-router-dom": "^7.9.6",
     "zustand": "^5.0.8"
   },
   "devDependencies": {
+    "@tailwindcss/typography": "^0.5.20",
     "@vitejs/plugin-react": "^4.3.1",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.47",
+    "react-snap": "^1.23.0",
     "tailwindcss": "^3.4.13",
     "vite": "^7.2.4"
   }

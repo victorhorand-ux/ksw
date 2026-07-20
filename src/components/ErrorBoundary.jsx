@@ -1,3 +1,4 @@
+// src/components/ErrorBoundary.jsx
 import React from 'react'
 import { Link } from 'react-router-dom'
 import useLanguageStore from '../stores/languageStore'
@@ -13,36 +14,20 @@ class ErrorBoundary extends React.Component {
   }
 
   static getDerivedStateFromError(error) {
-    // Update state so the next render will show the fallback UI
     return { hasError: true }
   }
 
   componentDidCatch(error, errorInfo) {
-    // Log error to console (in production, send to error tracking service)
     console.error('ErrorBoundary caught an error:', error, errorInfo)
-    
-    this.setState({
-      error,
-      errorInfo
-    })
-
-    // In production, send to error tracking service (e.g., Sentry, LogRocket)
-    // if (process.env.NODE_ENV === 'production') {
-    //   errorTrackingService.logError(error, errorInfo)
-    // }
+    this.setState({ error, errorInfo })
   }
 
   handleReset = () => {
-    this.setState({ 
-      hasError: false, 
-      error: null, 
-      errorInfo: null 
-    })
+    this.setState({ hasError: false, error: null, errorInfo: null })
   }
 
   render() {
     if (this.state.hasError) {
-      // Get language from store without hook (since this is a class component)
       let language = 'en'
       try {
         language = useLanguageStore.getState().language
@@ -51,41 +36,43 @@ class ErrorBoundary extends React.Component {
       }
       
       return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-          <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
-            <div className="text-6xl mb-4">⚠️</div>
-            <h1 className="text-2xl font-bold text-gray-800 mb-4">
-              {language === 'en' ? 'Something went wrong' : 'Ikintu cyabaye'}
+        <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4 py-10">
+          <div className="max-w-lg w-full rounded-[2rem] border border-slate-200 bg-white p-8 text-center shadow-2xl md:p-12">
+            <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-rose-50 text-4xl">⚠️</div>
+            <h1 className="mb-4 text-2xl font-black tracking-tight text-slate-900 md:text-3xl">
+              {language === 'en' ? 'Something went wrong' : 'Habaye ikibazo'}
             </h1>
-            <p className="text-gray-600 mb-6">
+            <p className="mb-8 text-slate-500 font-medium">
               {language === 'en' 
-                ? 'We apologize for the inconvenience. An error occurred while loading this page.'
-                : 'Tubabarira ubwoba. Ikosa ryabaye mugihe twongeraga kurukurikirana.'
+                ? 'We apologize for the inconvenience. An unexpected issue interrupted this page, but you can recover quickly.'
+                : 'Twiseguye, habaye ikosa ritunganye ryahagaritse iyi paji, ariko urashobora kuyisubiramo byoroshye.'
               }
             </p>
             
             {process.env.NODE_ENV === 'development' && this.state.error && (
-              <details className="mb-6 text-left bg-gray-100 p-4 rounded text-sm">
-                <summary className="cursor-pointer font-semibold mb-2">
-                  Error Details (Development Only)
+              <details className="mb-8 text-left bg-slate-50 border border-slate-200 p-4 rounded-xl text-sm overflow-hidden">
+                <summary className="cursor-pointer font-bold text-slate-700 mb-2 outline-none">
+                  Error Details (Dev Only)
                 </summary>
-                <pre className="overflow-auto text-xs">
+                <pre className="overflow-auto text-[10px] text-slate-600 custom-scrollbar">
                   {this.state.error.toString()}
                   {this.state.errorInfo?.componentStack}
                 </pre>
               </details>
             )}
             
-            <div className="flex gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              {/* 🚀 Changed to a hard reload for better recovery from fatal crashes */}
               <button
-                onClick={this.handleReset}
-                className="bg-primary-600 hover:bg-primary-700 text-white px-6 py-2 rounded-lg transition"
+                onClick={() => window.location.reload()}
+                className="w-full rounded-2xl bg-sky-600 px-6 py-4 font-black text-white shadow-lg shadow-sky-200 transition-all hover:bg-sky-700 active:scale-[0.98] sm:w-auto"
               >
-                {language === 'en' ? 'Try Again' : 'Gerageza Nanone'}
+                {language === 'en' ? 'Refresh Page' : 'Ongera Ugerageze'}
               </button>
               <Link
                 to="/"
-                className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-2 rounded-lg transition"
+                onClick={this.handleReset}
+                className="w-full rounded-2xl border border-slate-200 bg-slate-100 px-6 py-4 font-black text-slate-700 transition-all hover:bg-slate-200 active:scale-[0.98] sm:w-auto"
               >
                 {language === 'en' ? 'Go Home' : 'Subira Ahabanza'}
               </Link>
@@ -100,4 +87,3 @@ class ErrorBoundary extends React.Component {
 }
 
 export default ErrorBoundary
-

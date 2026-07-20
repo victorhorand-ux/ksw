@@ -10,10 +10,26 @@ const Blog = () => {
 
   useEffect(() => {
     fetchPosts()
-    document.title = "Swimming Guides & Tips in Kigali | Kigali Swim Shop"
+    document.title = "Swimming Guides & Tips in Kigali | KigaliSwimShop"
   }, [fetchPosts])
 
-  if (isLoading) return <div className="text-center py-20">Loading guides...</div>
+  if (isLoading) return (
+    <div className="min-h-[50vh] flex items-center justify-center px-4 py-20">
+      <div className="rounded-[2rem] border border-slate-200 bg-white px-8 py-10 text-center shadow-sm">
+        <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-sky-500" />
+        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Loading guides...</p>
+      </div>
+    </div>
+  )
+
+  if (!posts.length) return (
+    <div className="container mx-auto px-4 py-12 max-w-6xl">
+      <div className="rounded-[2rem] border border-dashed border-slate-300 bg-white p-10 text-center shadow-sm">
+        <h2 className="text-2xl font-black text-slate-900">{language === 'en' ? 'No guides available yet' : 'Nta nyigisho zihari'}</h2>
+        <p className="mt-3 text-sm text-slate-600">{language === 'en' ? 'New swimming tips and product guides will appear here soon.' : 'Inyigisho nshya zo koga n’ibikoresho zizahita zigaragara hano.'}</p>
+      </div>
+    </div>
+  )
 
   return (
     <div className="container mx-auto px-4 py-12 max-w-6xl">
