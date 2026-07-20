@@ -3,7 +3,7 @@ name: Build and Deploy to Cloudflare Pages
 on:
   push:
     branches:
-      - main # Change to master if your default branch is master
+      - main 
 
 jobs:
   deploy:
@@ -19,14 +19,24 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # Uses a modern Node version
+          node-version: '20'
 
       - name: Install Dependencies
-        run: npm ci # Safer than npm install for CI environments
+        run: npm ci 
 
       - name: Build and Pre-render (React Snap)
-        # This will execute Vite build and React Snap flawlessly on GitHub's servers
         run: npm run build
+        env:
+          VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
+          VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}
+          VITE_FIREBASE_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
+          VITE_FIREBASE_STORAGE_BUCKET: ${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}
+          VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}
+          VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
+          VITE_DEPLOY_WEBHOOK_URL: ${{ secrets.VITE_DEPLOY_WEBHOOK_URL }}
+          VITE_CLOUDINARY_CLOUD_NAME: ${{ secrets.VITE_CLOUDINARY_CLOUD_NAME }}
+          VITE_CLOUDINARY_UPLOAD_PRESET: ${{ secrets.VITE_CLOUDINARY_UPLOAD_PRESET }}
+          VITE_ADMIN_EMAILS: ${{ secrets.VITE_ADMIN_EMAILS }}
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/pages-action@v1
@@ -34,5 +44,5 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           projectName: 'indimo-leasure'
-          directory: 'dist' # The output folder created by Vite
+          directory: 'dist' 
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
