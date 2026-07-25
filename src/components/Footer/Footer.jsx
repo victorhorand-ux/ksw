@@ -63,16 +63,27 @@ export default function Footer() {
   const currentLanguage = isHydrated ? language : 'en';
   const t = translations[currentLanguage];
 
-  const handleLinkClick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+  const handleLinkClick = () => {
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
 
   const handleSubscribe = async (e) => {
     e.preventDefault();
-    if (!email.trim()) return;
+    const normalizedEmail = email.trim().toLowerCase();
+
+    if (!normalizedEmail) return;
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+      toast.error(currentLanguage === 'en' ? 'Please enter a valid email address.' : 'Andika imeyili ikora.', { id: 'footer-email-invalid' });
+      return;
+    }
 
     setSubscribeStatus('loading');
     try {
       await addDoc(collection(db, 'subscribers'), {
-        email: email,
+        email: normalizedEmail,
         subscribedAt: new Date().toISOString(),
         status: 'active'
       });

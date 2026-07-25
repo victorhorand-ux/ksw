@@ -27,6 +27,10 @@ export default function FooterNewsletter({ t, email, setEmail, handleSubscribe, 
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              autoComplete="email"
+              inputMode="email"
+              name="email"
+              aria-label={t.placeholder}
               placeholder={t.placeholder}
               className="flex-1 bg-slate-800 sm:bg-transparent border border-slate-700 sm:border-none rounded-2xl sm:rounded-none px-6 py-4 sm:py-3 text-white placeholder-slate-500 focus:outline-none w-full shadow-sm sm:shadow-none"
             />

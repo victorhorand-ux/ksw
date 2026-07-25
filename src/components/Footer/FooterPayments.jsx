@@ -18,6 +18,8 @@ export default function FooterPayments({ t }) {
           <img 
             src="/momo_mtna.png" 
             alt="MTN MoMo" 
+            loading="lazy"
+            decoding="async"
             className="h-4 sm:h-5 w-auto object-contain rounded-[2px]" 
           />
           <span className="text-[11px] sm:text-xs font-bold tracking-wide">MTN Momo</span>
@@ -28,6 +30,8 @@ export default function FooterPayments({ t }) {
           <img 
             src="/airtel_money_logo.jpg" 
             alt="Airtel Money" 
+            loading="lazy"
+            decoding="async"
             className="h-4 sm:h-5 w-auto object-contain rounded-[2px]" 
           />
           <span className="text-[11px] sm:text-xs font-bold tracking-wide">Airtel Money</span>
@@ -47,7 +51,8 @@ export default function FooterPayments({ t }) {
             key={social.name} 
             href={social.url} 
             target="_blank" 
-            rel="noopener noreferrer" 
+            rel="noopener noreferrer"
+            aria-label={`Visit our ${social.name} page`}
             className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-slate-800 flex items-center justify-center text-lg sm:text-xl text-slate-300 border border-slate-700 transition-all transform hover:-translate-y-1 shadow-md ${social.hover}`}
           >
             {social.icon}

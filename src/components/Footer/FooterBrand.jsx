@@ -5,7 +5,7 @@ export default function FooterBrand({ language, t }) {
   return (
     <div className="space-y-6">
       <div className="flex items-center space-x-2">
-        <img src="/logo.png" alt="Logo" className="w-10 h-10 object-contain" />
+        <img src="/logo.png" alt="KigaliSwimShop logo" width="40" height="40" loading="lazy" decoding="async" className="w-10 h-10 object-contain" />
         <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
           KigaliSwimShop
         </h3>

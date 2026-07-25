@@ -22,6 +22,13 @@ import { doc, deleteDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../../config/firebaseFirestore';
 import { useQueryClient } from '@tanstack/react-query'; 
 
+// Helper function to safely parse numerical inputs outside the component lifecycle
+const parsePrice = (val) => {
+  if (val === undefined || val === null || val === '') return 0;
+  const cleaned = String(val).replace(/[^0-9.]/g, '');
+  return Number(cleaned) || 0;
+};
+
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('overview');
   
@@ -112,17 +119,20 @@ export default function Dashboard() {
           onClose={() => setShowProductModal(false)}
           onSave={async (formData) => {
             
-            // 🚀 NEW: Auto-generate the slug from the product name
-            const generatedSlug = formData.name
+            // 1. SAFE NAME FALLBACK: Prevents crashes on old products missing the 'name' field
+            const safeName = formData.name || formData.title || 'product';
+            
+            const generatedSlug = safeName
               .toLowerCase()
               .replace(/[^a-z0-9]+/g, '-') 
               .replace(/(^-|-$)+/g, '');   
 
             const productData = {
               ...formData,
-              slug: formData.slug || generatedSlug, // 🚀 Save it to Firestore
-              price: Number(formData.price),
-              stock: Number(formData.stock),
+              slug: formData.slug || generatedSlug,
+              price: parsePrice(formData.price),
+              originalPrice: parsePrice(formData.originalPrice),
+              stock: parsePrice(formData.stock),
               updatedAt: new Date().toISOString()
             };
 
@@ -134,6 +144,10 @@ export default function Dashboard() {
                 await addProduct({ ...productData, createdAt: new Date().toISOString() });
                 toast.success('New product added!');
               }
+              
+              // 2. CLEAR CACHE: This forces the Admin Dashboard to instantly show the new price!
+              queryClient.invalidateQueries(['admin-data']); 
+              
               triggerCloudflareRebuild(); 
               setShowProductModal(false);
             } catch (e) {
