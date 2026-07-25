@@ -12,16 +12,25 @@ export default function ProductCard({ product, onEdit, onDelete }) {
 
   return (
     <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm hover:shadow-xl transition-all group flex flex-col">
-      <div className="relative aspect-[4/3] bg-slate-50 overflow-hidden">
-        <LazyImage 
-          src={product.image} 
-          alt={product.nameRw || product.name || 'Product'} 
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
-        />
+      
+      {/* 🚀 FIXED HEIGHT & DEEP CHILD TARGETING */}
+      <div className="relative w-full h-48 md:h-56 bg-white p-4 flex items-center justify-center overflow-hidden">
+        
+        {/* 
+          Notice the [&_img]: classes! 
+          This forces any img tag buried inside LazyImage to strictly obey the rules.
+        */}
+        <div className="w-full h-full flex items-center justify-center [&_img]:!object-contain [&_img]:!max-w-full [&_img]:!max-h-full [&_img]:!h-auto [&_img]:!w-auto">
+          <LazyImage 
+            src={product.image} 
+            alt={product.nameRw || product.name || 'Product'} 
+            className="group-hover:scale-105 transition-transform duration-700 w-full h-full" 
+          />
+        </div>
         
         {/* 🏷️ SALE Badge */}
         {isOnSale && (
-          <div className="absolute top-2 right-2 bg-rose-500 text-white text-[10px] font-black px-2 py-1 rounded-md shadow-lg">
+          <div className="absolute top-3 right-3 z-10 bg-rose-500 text-white text-[10px] font-black px-2.5 py-1 rounded-md shadow-lg">
             SALE
           </div>
         )}
@@ -29,7 +38,7 @@ export default function ProductCard({ product, onEdit, onDelete }) {
       
       <div className="p-3 md:p-5 flex flex-col flex-1">
         
-        {/* 🚀 FIXED: Displays Kinyarwanda name, falls back to English if missing */}
+        {/* Displays Kinyarwanda name, falls back to English if missing */}
         <h3 className="font-black text-slate-900 mb-1 text-sm md:text-base line-clamp-2 leading-tight flex-1 uppercase tracking-tight">
           {product.nameRw || product.name || 'Unnamed Product'}
         </h3>
