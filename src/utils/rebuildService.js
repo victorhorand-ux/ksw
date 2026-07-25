@@ -7,8 +7,13 @@ export const triggerCloudflareRebuild = async () => {
   }
 
   try {
-    // We don't need to await the response for the UI, we just fire and forget
-    fetch(webhookUrl, { method: 'POST' });
+    // 🚀 'no-cors' prevents the browser block, and 'await' ensures 
+    // the try/catch block can safely intercept any network issues.
+    await fetch(webhookUrl, { 
+      method: 'POST',
+      mode: 'no-cors' 
+    });
+    
     console.log('Cloudflare rebuild triggered successfully.');
   } catch (error) {
     console.error('Failed to trigger Cloudflare rebuild:', error);
