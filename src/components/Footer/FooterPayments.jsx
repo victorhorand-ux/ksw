@@ -3,9 +3,9 @@ import { FaInstagram, FaFacebookF, FaXTwitter, FaBuildingColumns } from 'react-i
 
 export default function FooterPayments({ t }) {
   const socialLinks = [
-    { name: 'Instagram', url: 'https://instagram.com/kigaliswimshop', icon: <FaInstagram />, hover: 'hover:bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-500 hover:border-transparent' },
-    { name: 'Facebook', url: 'https://facebook.com/kigaliswimshop', icon: <FaFacebookF />, hover: 'hover:bg-[#1877F2] hover:border-transparent' },
-    { name: 'Twitter', url: 'https://twitter.com/kigaliswimshop', icon: <FaXTwitter />, hover: 'hover:bg-black hover:border-transparent' }
+    { name: 'Instagram', url: 'https://instagram.com/kigaliswimshop', icon: <FaInstagram />, hover: 'bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-500 hover:border-transparent' },
+    { name: 'Facebook', url: 'https://facebook.com/kigaliswimshop', icon: <FaFacebookF />, hover: 'bg-[#1877F2] hover:border-transparent' },
+    { name: 'Twitter', url: 'https://twitter.com/kigaliswimshop', icon: <FaXTwitter />, hover: 'bg-black hover:border-transparent' }
   ];
 
   return (

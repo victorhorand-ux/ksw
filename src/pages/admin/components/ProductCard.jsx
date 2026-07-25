@@ -1,34 +1,58 @@
 import React from 'react';
 import { formatRWF } from '../../../utils/currency';
-// Adjust this import path if your LazyImage component is located elsewhere
 import LazyImage from '../../../components/LazyImage'; 
 
 export default function ProductCard({ product, onEdit, onDelete }) {
+  // Ensure numerical values for comparison
+  const price = Number(product.price) || 0;
+  const originalPrice = Number(product.originalPrice) || 0;
+  
+  // A product is on sale only if originalPrice is strictly greater than selling price
+  const isOnSale = originalPrice > price && price > 0;
+
   return (
     <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm hover:shadow-xl transition-all group flex flex-col">
-      <div className="relative aspect-[4/3] bg-slate-50 overflow-hidden">
-        <LazyImage 
-          src={product.image} 
-          alt={product.name} 
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
-        />
-        {product.originalPrice > product.price && (
-          <div className="absolute top-2 right-2 bg-rose-500 text-white text-[10px] font-black px-2 py-1 rounded-md shadow-lg">
+      
+      {/* 🚀 FIXED HEIGHT & DEEP CHILD TARGETING */}
+      <div className="relative w-full h-48 md:h-56 bg-white p-4 flex items-center justify-center overflow-hidden">
+        
+        {/* 
+          Notice the [&_img]: classes! 
+          This forces any img tag buried inside LazyImage to strictly obey the rules.
+        */}
+        <div className="w-full h-full flex items-center justify-center [&_img]:!object-contain [&_img]:!max-w-full [&_img]:!max-h-full [&_img]:!h-auto [&_img]:!w-auto">
+          <LazyImage 
+            src={product.image} 
+            alt={product.nameRw || product.name || 'Product'} 
+            className="group-hover:scale-105 transition-transform duration-700 w-full h-full" 
+          />
+        </div>
+        
+        {/* 🏷️ SALE Badge */}
+        {isOnSale && (
+          <div className="absolute top-3 right-3 z-10 bg-rose-500 text-white text-[10px] font-black px-2.5 py-1 rounded-md shadow-lg">
             SALE
           </div>
         )}
       </div>
       
       <div className="p-3 md:p-5 flex flex-col flex-1">
+        
+        {/* Displays Kinyarwanda name, falls back to English if missing */}
         <h3 className="font-black text-slate-900 mb-1 text-sm md:text-base line-clamp-2 leading-tight flex-1 uppercase tracking-tight">
-          {product.name}
+          {product.nameRw || product.name || 'Unnamed Product'}
         </h3>
         
         <div className="flex flex-col mb-4">
-          <p className="text-sky-600 font-black text-sm md:text-lg">{formatRWF(product.price)}</p>
-          {product.originalPrice > 0 && (
+          {/* Main Price */}
+          <p className="text-sky-600 font-black text-sm md:text-lg">
+            {formatRWF(price)}
+          </p>
+          
+          {/* Strike-through Original Price (Only shown on sale) */}
+          {isOnSale && (
             <p className="text-[10px] text-slate-400 line-through font-bold tracking-tighter">
-              {formatRWF(product.originalPrice)}
+              {formatRWF(originalPrice)}
             </p>
           )}
         </div>

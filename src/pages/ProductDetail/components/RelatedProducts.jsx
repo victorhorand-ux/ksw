@@ -20,7 +20,7 @@ export default function RelatedProducts({ currentProductId, allProducts, languag
   if (relatedProducts.length === 0) return null;
 
   return (
-    <div className="mt-16 lg:mt-24 pt-12 border-t border-slate-100 px-4 lg:px-0">
+    <div className="mt-2  pt-12 border-t border-slate-100 px-4 lg:px-4">
       <h2 className="text-2xl font-black mb-8 text-slate-900">
         {language === 'en' ? 'You Might Also Like' : 'Ushobora Gukunda'}
       </h2>

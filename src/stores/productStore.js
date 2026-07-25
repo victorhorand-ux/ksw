@@ -53,14 +53,26 @@ const useProductStore = create((set, get) => ({
     return products.filter(p => p.category === category);
   },
 
-  searchProducts: (searchQuery) => { // Renamed parameter to avoid conflict with Firestore 'query'
+  // 🚀 SMART TOKENIZED SEARCH
+  searchProducts: (searchQuery) => { 
     const products = get().products;
-    const lowerQuery = searchQuery.toLowerCase();
-    return products.filter(p => 
-      p.name.toLowerCase().includes(lowerQuery) ||
-      (p.nameRw && p.nameRw.toLowerCase().includes(lowerQuery)) ||
-      p.description.toLowerCase().includes(lowerQuery)
-    );
+    if (!searchQuery) return [];
+
+    // 1. Clean and split the user's input into individual words
+    const searchWords = searchQuery.toLowerCase().trim().split(/\s+/);
+
+    return products.filter(p => {
+      // 2. Combine all the product's details into one giant hidden string
+      const searchableText = [
+        p.name,
+        p.nameRw,
+        p.category, 
+        p.description
+      ].map(text => (text || '').toLowerCase()).join(' ');
+
+      // 3. Match ONLY if ALL typed words are found anywhere in its text
+      return searchWords.every(word => searchableText.includes(word));
+    });
   },
 
   // 3. ADMIN ACTIONS (No more blocking alerts!)

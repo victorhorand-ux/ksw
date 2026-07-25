@@ -100,7 +100,7 @@ export default function Dashboard() {
               await updateDoc(doc(db, 'posts', postId), { status: newStatus });
               toast.success(`Post marked as ${newStatus}`);
               triggerCloudflareRebuild(); 
-              queryClient.invalidateQueries(['admin-data']); 
+              queryClient.invalidateQueries(); 
             } catch (e) {
               toast.error('Failed to update status');
             }
@@ -146,7 +146,7 @@ export default function Dashboard() {
               }
               
               // 2. CLEAR CACHE: This forces the Admin Dashboard to instantly show the new price!
-              queryClient.invalidateQueries(['admin-data']); 
+              queryClient.invalidateQueries();
               
               triggerCloudflareRebuild(); 
               setShowProductModal(false);
@@ -175,7 +175,7 @@ export default function Dashboard() {
               await deleteDoc(doc(db, 'posts', confirmState.payload));
               toast.success('Article deleted successfully');
               triggerCloudflareRebuild();
-              queryClient.invalidateQueries(['admin-data']);
+              queryClient.invalidateQueries();
             }
             setConfirmState({ open: false, type: null, payload: null, loading: false });
           } catch (e) {

@@ -123,7 +123,7 @@ export default function Footer() {
         </svg>
       </div>
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-20 pt-10 pb-8 md:pt-12 md:pb-12">
+      <div className="container mx-auto px-4 sm:px-4 lg:px-4 relative z-20 pt-10 pb-8 md:pt-12 md:pb-12">
         
         <FooterNewsletter 
           t={t} 
