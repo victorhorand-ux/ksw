@@ -15,7 +15,7 @@ export default function ProductActionPanel({
   onBuyNow,
   onOpenSizeChart
 }) {
-  const [openSection, setOpenSection] = useState('description');
+  const [openSection, setOpenSection] = useState('');
 
   const price = Number(product.price) || 0;
   const originalPrice = Number(product.originalPrice) || 0;
@@ -30,7 +30,7 @@ export default function ProductActionPanel({
   const displayDescriptionRw = product.descriptionRw && product.descriptionRw.trim() !== '' ? product.descriptionRw : defaultDescriptionRw;
 
   return (
-    <div className="px-4 pt-6 pb-0 lg:pt-0 lg:px-0">
+    <div className="px-4 pt-2 pb-0 lg:pt-0 lg:px-0">
       <div className="sticky top-28 space-y-6 lg:space-y-8">
         
         {/* Header */}
