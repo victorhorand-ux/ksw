@@ -50,13 +50,18 @@ export default function ProductDetail() {
   }, [slug, product, trackProductView]);
 
   const handleAddToCart = () => {
-    if (!product || !product.inStock) return; 
+    // Convert stock to a Number just in case Firebase saved it as a String ("20")
+    const isAvailable = Number(product.stock) > 0;
+    
+    if (!product || !isAvailable) return; 
     addItem({ ...product, selectedSize, selectedColor }, quantity);
     toast.success(language === 'en' ? 'Added to cart!' : 'Yashyizwe mu gitebo!');
   };
 
   const handleBuyNow = () => {
-    if (!product || !product.inStock) return;
+    const isAvailable = Number(product.stock) > 0;
+    
+    if (!product || !isAvailable) return;
     addItem({ ...product, selectedSize, selectedColor }, quantity);
     navigate('/checkout');
   };

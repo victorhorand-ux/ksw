@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { formatRWF } from '../../../utils/currency';
-import Button from '../../../components/ui/Button'; // 🚀 Imported the new reusable Button
-
+import Button from '../../../components/ui/Button';
 export default function ProductActionPanel({
   product,
   language,
@@ -21,6 +20,9 @@ export default function ProductActionPanel({
   const originalPrice = Number(product.originalPrice) || 0;
   const hasDiscount = originalPrice > price && originalPrice > 0;
   const discountPercentage = hasDiscount ? Math.round(((originalPrice - price) / originalPrice) * 100) : 0;
+
+  // 🚀 FIXED: Safely check if the stock number is greater than 0
+  const isAvailable = Number(product.stock) > 0;
 
   // SEO Boosting Default Descriptions
   const defaultDescriptionEn = `Upgrade your swimming experience with our premium ${product.name}. Sourced for durability, comfort, and top-tier performance, this is essential gear for both professional athletes and leisure swimmers in Rwanda. Order today from KigaliSwimShop and enjoy 2-hour fast delivery anywhere in Kigali, complete with secure Mobile Money (MoMo) payments. Dive in with the best!`;
@@ -140,7 +142,7 @@ export default function ProductActionPanel({
               variant="secondary"
               size="lg"
               onClick={onAddToCart}
-              disabled={!product.inStock}
+              disabled={!isAvailable} // 🚀 FIXED HERE
               className="flex-1 gap-2"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -154,10 +156,10 @@ export default function ProductActionPanel({
               variant="primary"
               size="lg"
               onClick={onBuyNow}
-              disabled={!product.inStock}
+              disabled={!isAvailable} // 🚀 FIXED HERE
               className="flex-[1.5]"
             >
-              {product.inStock 
+              {isAvailable // 🚀 FIXED HERE
                 ? (language === 'en' ? 'Buy It Now' : 'Gura Nonaha')
                 : (language === 'en' ? 'Out of Stock' : 'Ntibyabonetse')
               }
