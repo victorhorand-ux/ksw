@@ -10,6 +10,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       workbox: {
         cleanupOutdatedCaches: true,
+        // 🚀 ADDED: Forces the Service Worker to bypass sitemap.xml
+        navigateFallbackDenylist: [/^\/sitemap\.xml$/]
       }
     })
   ],
