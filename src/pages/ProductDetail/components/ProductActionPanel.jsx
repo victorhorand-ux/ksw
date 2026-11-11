@@ -126,9 +126,9 @@ export default function ProductActionPanel({
                 <span className="w-10 text-center font-bold text-slate-900 border-x border-slate-100 h-full flex items-center justify-center">{quantity}</span>
                 <button onClick={() => setQuantity(Math.min(product.stock || 10, quantity + 1))} className="flex-1 h-full flex items-center justify-center text-slate-500 hover:text-slate-900 hover:bg-slate-50 rounded-r-xl text-xl transition-colors">+</button>
               </div>
-              <span className="text-xs font-bold text-green-700 bg-green-50 px-3 py-1.5 rounded-md border border-green-200">
+              {/* <span className="text-xs font-bold text-green-700 bg-green-50 px-3 py-1.5 rounded-md border border-green-200">
                 {product.stock} {language === 'en' ? 'in stock' : 'ibirimo'}
-              </span>
+              </span> */}
             </div>
           </div>
         </div>
